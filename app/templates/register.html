@@ -82,7 +82,7 @@
                 <div class="bg-black/50 rounded-xl p-4 mb-6 text-left relative group border border-slate-800">
                     <label class="text-xs text-slate-500 uppercase tracking-wider font-bold mb-1 block">Token de Acesso</label>
                     <code class="text-emerald-400 font-mono text-lg break-all">{{ new_feeder.token }}</code>
-                    <button onclick="navigator.clipboard.writeText('{{ new_feeder.token }}')" class="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors">
+                    <button onclick="copyToClipboard('{{ new_feeder.token }}', this)" class="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors">
                         <i data-lucide="copy" class="w-5 h-5"></i>
                     </button>
                 </div>

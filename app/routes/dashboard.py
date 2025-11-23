@@ -5,12 +5,14 @@ from app.models.log import Log
 from app.models.tank import Tank
 from app.services.command_bus import CommandBus
 from datetime import datetime
+from flask_login import login_required, current_user
 import json
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
 @dashboard_bp.route('/')
 @dashboard_bp.route('/dashboard')
+@login_required
 def index():
     feeders = Feeder.query.all()
     
@@ -26,11 +28,13 @@ def index():
     return render_template('dashboard.html', feeders=feeders)
 
 @dashboard_bp.route('/tanks')
+@login_required
 def tanks():
     tanks = Tank.query.all()
     return render_template('tanks.html', tanks=tanks)
 
 @dashboard_bp.route('/tanks/create', methods=['POST'])
+@login_required
 def create_tank():
     name = request.form.get('name')
     type = request.form.get('type')
@@ -43,6 +47,7 @@ def create_tank():
     return redirect(url_for('dashboard.tanks'))
 
 @dashboard_bp.route('/tanks/<int:id>/update', methods=['POST'])
+@login_required
 def update_tank(id):
     tank = Tank.query.get_or_404(id)
     
@@ -64,6 +69,7 @@ def update_tank(id):
     return redirect(url_for('dashboard.tanks'))
 
 @dashboard_bp.route('/feeder/<int:id>')
+@login_required
 def feeder_detail(id):
     feeder = Feeder.query.get_or_404(id)
     logs = Log.query.filter_by(feeder_id=id).order_by(Log.timestamp.desc()).limit(50).all()
@@ -71,6 +77,7 @@ def feeder_detail(id):
     return render_template('feeder.html', feeder=feeder, logs=logs, tanks=tanks)
 
 @dashboard_bp.route('/feeder/<int:id>/update', methods=['POST'])
+@login_required
 def update_feeder(id):
     feeder = Feeder.query.get_or_404(id)
     feeder.name = request.form.get('name')
@@ -114,6 +121,7 @@ def update_feeder(id):
     return redirect(url_for('dashboard.feeder_detail', id=id))
 
 @dashboard_bp.route('/feeder/<int:id>/feed', methods=['POST'])
+@login_required
 def feed_now(id):
     feeder = Feeder.query.get_or_404(id)
     
@@ -125,9 +133,6 @@ def feed_now(id):
     CommandBus.add_command(id, {'type': 'feed', 'duration': feeder.open_duration_ms})
     
     # 2. Command: Refill Drawer (Open Top Gate from Main Tank)
-    # User Rule: "Always full", "Refill after bottom closes"
-    # We queue this command. Firmware/Bus should handle sequence or we rely on delay.
-    # Assuming 'refill' command opens the top gate.
     CommandBus.add_command(id, {
         'type': 'refill', 
         'units': 1, # Refill 1 unit (target_weight)
@@ -138,17 +143,20 @@ def feed_now(id):
     return redirect(url_for('dashboard.feeder_detail', id=id))
 
 @dashboard_bp.route('/logs')
+@login_required
 def logs():
     page = request.args.get('page', 1, type=int)
     logs = Log.query.order_by(Log.timestamp.desc()).paginate(page=page, per_page=20)
     return render_template('logs.html', logs=logs)
 
 @dashboard_bp.route('/register', methods=['GET'])
+@login_required
 def register_page():
     tanks = Tank.query.all()
     return render_template('register.html', new_feeder=None, tanks=tanks)
 
 @dashboard_bp.route('/register', methods=['POST'])
+@login_required
 def register_feeder_action():
     name = request.form.get('name')
     food_tank_id = request.form.get('food_tank_id') or None
@@ -165,3 +173,14 @@ def register_feeder_action():
     
     tanks = Tank.query.all()
     return render_template('register.html', new_feeder=feeder, tanks=tanks)
+
+@dashboard_bp.route('/settings')
+@login_required
+def settings():
+    return render_template('register_admin.html')
+
+@dashboard_bp.route('/firmware')
+@login_required
+def firmware():
+    feeders = Feeder.query.all()
+    return render_template('firmware.html', feeders=feeders)

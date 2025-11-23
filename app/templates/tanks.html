@@ -48,7 +48,7 @@
                     <i data-lucide="key" class="w-4 h-4 text-slate-500 flex-shrink-0"></i>
                     <code class="text-xs text-slate-400 font-mono truncate">{{ tank.token }}</code>
                 </div>
-                <button onclick="navigator.clipboard.writeText('{{ tank.token }}'); this.innerHTML = '<i data-lucide=\'check\' class=\'w-4 h-4 text-emerald-500\'></i>'; setTimeout(() => { this.innerHTML = '<i data-lucide=\'copy\' class=\'w-4 h-4\'></i>' }, 2000)" 
+                <button onclick="copyToClipboard('{{ tank.token }}', this)" 
                         class="text-slate-500 hover:text-white transition-colors p-1">
                     <i data-lucide="copy" class="w-4 h-4"></i>
                 </button>

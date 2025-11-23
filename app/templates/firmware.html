@@ -1,0 +1,276 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="flex items-center gap-4 mb-8">
+        <div class="w-12 h-12 rounded-full bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-900/50">
+            <i data-lucide="cpu" class="w-6 h-6 text-white"></i>
+        </div>
+        <div>
+            <h1 class="text-2xl font-bold text-white">Gerador de Firmware ESP32</h1>
+            <p class="text-slate-400">Configure e baixe o código para o seu microcontrolador.</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Configuration Form -->
+        <div class="lg:col-span-1 space-y-6">
+            <div class="bg-slate-900 rounded-xl border border-slate-800 p-6">
+                <h3 class="text-lg font-bold text-white mb-4">Configuração</h3>
+                <form id="firmwareForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-400 mb-1">Nome da Rede WiFi (SSID)</label>
+                        <input type="text" id="wifi_ssid" placeholder="MinhaCasa_2G" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-indigo-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-400 mb-1">Senha do WiFi</label>
+                        <input type="text" id="wifi_pass" placeholder="senha123" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-indigo-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-400 mb-1">Selecione o Habitat</label>
+                        <select id="feeder_select" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-indigo-500 outline-none">
+                            {% for feeder in feeders %}
+                            <option value="{{ feeder.id }}" data-token="{{ feeder.token }}">{{ feeder.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="button" onclick="generateCode()" class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-bold transition-colors flex items-center justify-center gap-2">
+                        <i data-lucide="code" class="w-4 h-4"></i>
+                        Gerar Código
+                    </button>
+                </form>
+            </div>
+
+            <div class="bg-slate-900 rounded-xl border border-slate-800 p-6">
+                <h3 class="text-lg font-bold text-white mb-4">Instruções</h3>
+                <ol class="list-decimal list-inside space-y-2 text-sm text-slate-400">
+                    <li>Instale a IDE do Arduino.</li>
+                    <li>Instale as bibliotecas: <code class="text-indigo-400">ArduinoJson</code>, <code class="text-indigo-400">ESP32Servo</code>.</li>
+                    <li>Copie o código gerado ao lado.</li>
+                    <li>Cole na IDE do Arduino.</li>
+                    <li>Selecione a placa ESP32 Dev Module.</li>
+                    <li>Faça o upload!</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Code Preview -->
+        <div class="lg:col-span-2">
+            <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden flex flex-col h-[600px]">
+                <div class="bg-slate-900 p-3 border-b border-slate-800 flex justify-between items-center">
+                    <span class="text-sm font-mono text-slate-400">esp32_feeder.ino</span>
+                    <div class="flex gap-2">
+                        <button onclick="copyCode()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs rounded-lg transition-colors flex items-center gap-2">
+                            <i data-lucide="copy" class="w-3 h-3"></i> Copiar
+                        </button>
+                        <button onclick="downloadCode()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs rounded-lg transition-colors flex items-center gap-2">
+                            <i data-lucide="download" class="w-3 h-3"></i> Baixar
+                        </button>
+                    </div>
+                </div>
+                <div class="flex-1 overflow-auto p-4">
+                    <pre><code id="codeBlock" class="language-cpp text-sm font-mono text-slate-300">
+// O código será gerado aqui...
+                    </code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Base Template
+    const codeTemplate = `#include <WiFi.h>
+#include <HTTPClient.h>
+#include <ArduinoJson.h>
+#include <ESP32Servo.h>
+
+// ================= CONFIGURATIONS =================
+const char* WIFI_SSID = "__SSID__";
+const char* WIFI_PASS = "__PASS__";
+
+// API Configuration
+const char* SERVER_URL = "http://biofeed.danielmello.store/api"; 
+const char* FEEDER_TOKEN = "__TOKEN__"; 
+const char* FEEDER_ID = "__ID__";       
+
+// Hardware Pins
+const int SERVO_PIN = 13;
+const int TRIG_PIN = 12; 
+const int ECHO_PIN = 14; 
+
+// Settings
+const int CHECK_INTERVAL = 5000; 
+const int SERVO_OPEN_POS = 90;
+const int SERVO_CLOSED_POS = 0;
+
+// ================= GLOBALS =================
+Servo feederServo;
+unsigned long lastCheckTime = 0;
+
+void setup() {
+  Serial.begin(115200);
+  
+  // Servo Setup
+  feederServo.attach(SERVO_PIN);
+  feederServo.write(SERVO_CLOSED_POS);
+
+  // WiFi Setup
+  connectWiFi();
+}
+
+void loop() {
+  // Reconnect WiFi if lost
+  if (WiFi.status() != WL_CONNECTED) {
+    connectWiFi();
+  }
+
+  // Heartbeat & Command Check
+  if (millis() - lastCheckTime > CHECK_INTERVAL) {
+    lastCheckTime = millis();
+    sendHeartbeat();
+  }
+}
+
+void connectWiFi() {
+  Serial.print("Connecting to WiFi");
+  WiFi.begin(WIFI_SSID, WIFI_PASS);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\\nWiFi Connected!");
+  Serial.print("IP: ");
+  Serial.println(WiFi.localIP());
+}
+
+void sendHeartbeat() {
+  if (WiFi.status() == WL_CONNECTED) {
+    HTTPClient http;
+    
+    String url = String(SERVER_URL) + "/feeder/" + String(FEEDER_ID) + "/status";
+    
+    http.begin(url);
+    http.addHeader("Content-Type", "application/json");
+    http.addHeader("Authorization", String("Bearer ") + String(FEEDER_TOKEN));
+
+    StaticJsonDocument<200> doc;
+    doc["battery"] = 100; 
+    doc["weight"] = 0;    
+    doc["water_sensor"] = "LSH"; 
+    doc["firmware_version"] = "1.0.0-ESP32";
+
+    String requestBody;
+    serializeJson(doc, requestBody);
+
+    int httpResponseCode = http.POST(requestBody);
+
+    if (httpResponseCode > 0) {
+      String response = http.getString();
+      Serial.println("Heartbeat Sent. Response: " + response);
+      processResponse(response);
+    } else {
+      Serial.print("Error on sending POST: ");
+      Serial.println(httpResponseCode);
+    }
+
+    http.end();
+  }
+}
+
+void processResponse(String jsonResponse) {
+  StaticJsonDocument<1024> doc;
+  DeserializationError error = deserializeJson(doc, jsonResponse);
+
+  if (error) {
+    Serial.print("deserializeJson() failed: ");
+    Serial.println(error.c_str());
+    return;
+  }
+
+  JsonArray commands = doc["commands"];
+  for (JsonObject cmd : commands) {
+    String type = cmd["type"];
+    int duration = cmd["duration"] | 1000;
+    
+    Serial.print("Executing Command: ");
+    Serial.println(type);
+
+    if (type == "feed") {
+      dispenseFood(duration);
+      ackCommand("feed", "executed");
+    } else if (type == "refill") {
+      ackCommand("refill", "executed");
+    }
+  }
+}
+
+void dispenseFood(int duration) {
+  Serial.println("Opening Servo...");
+  feederServo.write(SERVO_OPEN_POS);
+  delay(duration);
+  Serial.println("Closing Servo...");
+  feederServo.write(SERVO_CLOSED_POS);
+}
+
+void ackCommand(String cmdType, String status) {
+  if (WiFi.status() == WL_CONNECTED) {
+    HTTPClient http;
+    String url = String(SERVER_URL) + "/feeder/" + String(FEEDER_ID) + "/ack";
+    
+    http.begin(url);
+    http.addHeader("Content-Type", "application/json");
+    http.addHeader("Authorization", String("Bearer ") + String(FEEDER_TOKEN));
+
+    StaticJsonDocument<200> doc;
+    doc["command_id"] = "esp-ack"; 
+    doc["status"] = status;
+
+    String requestBody;
+    serializeJson(doc, requestBody);
+    http.POST(requestBody);
+    http.end();
+  }
+}`;
+
+    function generateCode() {
+        const ssid = document.getElementById('wifi_ssid').value || 'YOUR_SSID';
+        const pass = document.getElementById('wifi_pass').value || 'YOUR_PASS';
+        const select = document.getElementById('feeder_select');
+        const option = select.options[select.selectedIndex];
+        const id = option.value;
+        const token = option.getAttribute('data-token');
+
+        let code = codeTemplate;
+        code = code.replace('__SSID__', ssid);
+        code = code.replace('__PASS__', pass);
+        code = code.replace('__ID__', id);
+        code = code.replace('__TOKEN__', token);
+
+        document.getElementById('codeBlock').textContent = code;
+    }
+
+    function copyCode() {
+        const code = document.getElementById('codeBlock').textContent;
+        navigator.clipboard.writeText(code).then(() => {
+            alert('Código copiado!');
+        });
+    }
+
+    function downloadCode() {
+        const code = document.getElementById('codeBlock').textContent;
+        const blob = new Blob([code], { type: 'text/plain' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'esp32_feeder.ino';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    }
+
+    // Initial generation
+    generateCode();
+</script>
+{% endblock %}

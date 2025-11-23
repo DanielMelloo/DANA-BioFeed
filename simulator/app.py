@@ -4,44 +4,30 @@ import threading
 import time
 import uuid
 from datetime import datetime
-
-app = Flask(__name__)
-app.secret_key = 'simulator_secret'
-
-# In-memory storage for simulated devices
-# { id: SimulatedDevice }
-DEVICES = {}
-
-MAIN_API_URL = "http://localhost:5000/api"
-
-class SimulatedDevice:
-    def __init__(self, name, feeder_id, token=None, device_type='feeder'):
-        self.id = str(uuid.uuid4())[:8] # Internal Simulator ID
-        self.name = name
-        self.feeder_id = feeder_id # Real DB ID (Feeder ID or Tank ID)
-        self.token = token
-        self.device_type = device_type # 'feeder', 'food_tank', 'water_tank'
-        self.connected = False
-        self.last_log = "Initialized"
-        
-        # Sensors (Feeder)
-        self.battery_level = 100
-        self.drawer_weight = 0.0
-        
-        # Sensors (Tank)
-        self.tank_level = 100 # %
-        self.tank_weight = 5.0 # kg (for food tank)
-        
-        # Internal State
-        self.is_feeding = False
-        self.is_refilling = False
-        self.door_state = 'CLOSED' 
-        
-        # Thread control
-        self.active = True
-        self.thread = threading.Thread(target=self.run_loop)
-        self.thread.daemon = True
-        self.thread.start()
+    self.feeder_id = feeder_id # Real DB ID (Feeder ID or Tank ID)
+    self.token = token
+    self.device_type = device_type # 'feeder', 'food_tank', 'water_tank'
+    self.connected = False
+    self.last_log = "Initialized"
+    
+    # Sensors (Feeder)
+    self.battery_level = 100
+    self.drawer_weight = 0.0
+    
+    # Sensors (Tank)
+    self.tank_level = 100 # %
+    self.tank_weight = 5.0 # kg (for food tank)
+    
+    # Internal State
+    self.is_feeding = False
+    self.is_refilling = False
+    self.door_state = 'CLOSED' 
+    
+    # Thread control
+    self.active = True
+    self.thread = threading.Thread(target=self.run_loop)
+    self.thread.daemon = True
+    self.thread.start()
 
     def log(self, message):
         timestamp = datetime.now().strftime("%H:%M:%S")
