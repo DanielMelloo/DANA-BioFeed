@@ -198,6 +198,30 @@ def create_device():
     feeder_id = request.form.get('feeder_id')
     token = request.form.get('token')
     device_type = request.form.get('device_type')
+
+    # Auto-discovery if ID is missing but Token is present
+    if not feeder_id and token:
+        try:
+            headers = {'Authorization': f'Bearer {token}'}
+            resp = requests.get(f"{MAIN_API_URL}/identify", headers=headers, timeout=2)
+            if resp.status_code == 200:
+                data = resp.json()
+                feeder_id = data['id']
+                device_type = data['type']
+                if not name:
+                    name = data['name']
+                flash(f"Auto-detected device: {name} ({device_type})", "info")
+            else:
+                flash("Could not identify device by token. Please enter ID manually.", "error")
+                return redirect(url_for('index'))
+        except Exception as e:
+            flash(f"Error connecting to API: {e}", "error")
+            return redirect(url_for('index'))
+
+    if not feeder_id:
+         flash("Device ID is required.", "error")
+         return redirect(url_for('index'))
+
     device = SimulatedDevice(name, feeder_id, token, device_type)
     DEVICES[device.id] = device
     flash(f"Device {name} created!", "success")

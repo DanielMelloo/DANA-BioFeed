@@ -228,3 +228,37 @@ def report_tank_status(id):
     db.session.commit()
     
     return jsonify({'status': 'ok', 'level': tank.level})
+
+@api_bp.route('/identify', methods=['GET'])
+def identify_device():
+    token = None
+    if 'Authorization' in request.headers:
+        auth_header = request.headers['Authorization']
+        if auth_header.startswith('Bearer '):
+            token = auth_header.split(" ")[1]
+    
+    if not token:
+        return jsonify({'error': 'Token missing'}), 401
+
+    # Check Feeders
+    feeder = Feeder.query.filter_by(token=token).first()
+    if feeder:
+        return jsonify({
+            'id': feeder.id,
+            'type': 'feeder',
+            'name': feeder.name
+        })
+
+    # Check Tanks
+    tank = Tank.query.filter_by(token=token).first()
+    if tank:
+        # Determine if it's a food or water tank based on type
+        # Simulator expects 'food_tank' or 'water_tank'
+        sim_type = 'food_tank' if tank.type == 'food' else 'water_tank'
+        return jsonify({
+            'id': tank.id,
+            'type': sim_type,
+            'name': tank.name
+        })
+
+    return jsonify({'error': 'Device not found'}), 404

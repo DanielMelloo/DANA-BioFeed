@@ -10,11 +10,11 @@
         </h2>
         <form action="{{ url_for('create_device') }}" method="POST" class="space-y-4">
             <div>
-                <label class="block text-sm text-slate-400 mb-1">Nome do Simulador</label>
-                <input type="text" name="name" placeholder="Ex: ESP32 Sala" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-indigo-500 outline-none" required>
+                <label class="block text-sm text-slate-400 mb-1">Nome do Simulador (Opcional)</label>
+                <input type="text" name="name" placeholder="Ex: ESP32 Sala (Preenchido auto pelo Token)" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-indigo-500 outline-none">
             </div>
             <div>
-                <label class="block text-sm text-slate-400 mb-1">Tipo de Dispositivo</label>
+                <label class="block text-sm text-slate-400 mb-1">Tipo de Dispositivo (Opcional)</label>
                 <select name="device_type" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-indigo-500 outline-none">
                     <option value="feeder">Alimentador (Habitat)</option>
                     <option value="food_tank">Tanque de Ração (Principal)</option>
@@ -22,8 +22,8 @@
                 </select>
             </div>
             <div>
-                <label class="block text-sm text-slate-400 mb-1">ID do Habitat (Banco de Dados)</label>
-                <input type="number" name="feeder_id" placeholder="Ex: 1" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-indigo-500 outline-none" required>
+                <label class="block text-sm text-slate-400 mb-1">ID do Habitat (Opcional)</label>
+                <input type="number" name="feeder_id" placeholder="Preenchido auto pelo Token" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-indigo-500 outline-none">
             </div>
             <div>
                 <label class="block text-sm text-slate-400 mb-1">Token de Acesso</label>
