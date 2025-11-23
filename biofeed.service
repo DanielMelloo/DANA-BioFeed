@@ -1,0 +1,15 @@
+[Unit]
+Description=Gunicorn instance to serve BioFeed
+After=network.target
+
+[Service]
+User=ec2-user
+Group=ec2-user
+WorkingDirectory=/home/ec2-user/biofeed
+Environment="PATH=/home/ec2-user/biofeed/venv/bin"
+Environment="SECRET_KEY=production-secret-key-change-this"
+Environment="SQLALCHEMY_DATABASE_URI=sqlite:///feeders_v7.db"
+ExecStart=/home/ec2-user/biofeed/venv/bin/gunicorn --workers 3 --bind 0.0.0.0:8001 -m 007 main:app
+
+[Install]
+WantedBy=multi-user.target

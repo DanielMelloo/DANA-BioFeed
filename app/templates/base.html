@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DANA BioFeed - Habitat Inteligente</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Custom Scrollbar for Dark Mode */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569; 
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: { 
+                            50: '#f8fafc', 
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b', 
+                            900: '#0f172a', 
+                            950: '#020617' 
+                        },
+                        indigo: { 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' },
+                        emerald: { 500: '#10b981', 900: '#064e3b' },
+                        amber: { 500: '#f59e0b', 900: '#78350f' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-200 font-sans antialiased selection:bg-indigo-500 selection:text-white">
+    <div class="min-h-screen flex flex-col md:flex-row">
+        <!-- Mobile Header -->
+        <header class="md:hidden bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center sticky top-0 z-50">
+            <div class="flex items-center gap-3">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="DANA BioFeed Logo" class="w-8 h-8 rounded-lg">
+                <span class="font-bold text-xl text-white tracking-tight">DANA BioFeed</span>
+            </div>
+            <button onclick="document.getElementById('sidebar').classList.toggle('-translate-x-full')" class="text-slate-400 hover:text-white transition-colors">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </header>
+
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-slate-900 border-r border-slate-800 transform -translate-x-full transition-transform duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col">
+            <div class="p-6 border-b border-slate-800 flex items-center gap-3">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="DANA BioFeed Logo" class="w-8 h-8 rounded-lg">
+                <div>
+                    <h1 class="font-bold text-xl text-white tracking-tight">DANA BioFeed</h1>
+                    <p class="text-xs text-emerald-500 font-medium">Sistema Online</p>
+                </div>
+            </div>
+
+            <nav class="flex-1 p-4 overflow-y-auto space-y-1">
+                <a href="{{ url_for('dashboard.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors {{ 'bg-indigo-900/30 text-indigo-400 font-medium border-r-4 border-indigo-500' if request.endpoint == 'dashboard.index' else 'text-slate-400 hover:bg-slate-800 hover:text-slate-200' }}">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                    <span>Painel</span>
+                </a>
+                <a href="{{ url_for('dashboard.logs') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors {{ 'bg-indigo-900/30 text-indigo-400 font-medium border-r-4 border-indigo-500' if request.endpoint == 'dashboard.logs' else 'text-slate-400 hover:bg-slate-800 hover:text-slate-200' }}">
+                    <i data-lucide="scroll-text" class="w-5 h-5"></i>
+                    <span>Logs Globais</span>
+                </a>
+                <a href="{{ url_for('dashboard.tanks') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors {{ 'bg-indigo-900/30 text-indigo-400 font-medium border-r-4 border-indigo-500' if request.endpoint == 'dashboard.tanks' else 'text-slate-400 hover:bg-slate-800 hover:text-slate-200' }}">
+                    <i data-lucide="container" class="w-5 h-5"></i>
+                    <span>Tanques</span>
+                </a>
+                <a href="{{ url_for('dashboard.register_page') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors {{ 'bg-indigo-900/30 text-indigo-400 font-medium border-r-4 border-indigo-500' if request.endpoint == 'dashboard.register_page' else 'text-slate-400 hover:bg-slate-800 hover:text-slate-200' }}">
+                    <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                    <span>Novo Dispositivo</span>
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-slate-800">
+                <button class="flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-900/20 rounded-lg w-full transition-colors">
+                    <i data-lucide="log-out" class="w-5 h-5"></i>
+                    <span>Sair</span>
+                </button>
+                <div class="mt-4 px-4 text-xs text-slate-500">
+                    v1.0.0 • DANA BioFeed
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 bg-slate-950 p-4 md:p-8 overflow-y-auto h-screen">
+            <div class="max-w-7xl mx-auto">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="mb-4 p-4 rounded-lg flex items-center gap-3 border {{ 'bg-emerald-900/30 text-emerald-400 border-emerald-800' if category == 'success' else 'bg-blue-900/30 text-blue-400 border-blue-800' if category == 'info' else 'bg-red-900/30 text-red-400 border-red-800' }}">
+                                <i data-lucide="{{ 'check-circle' if category == 'success' else 'info' }}" class="w-5 h-5"></i>
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

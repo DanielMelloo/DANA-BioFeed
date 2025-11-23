@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Create Device -->
+    <div class="bg-slate-900 p-6 rounded-xl border border-slate-800 h-fit">
+        <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <i data-lucide="plus-circle" class="w-5 h-5 text-indigo-500"></i>
+            Novo Dispositivo
+        </h2>
+        <form action="{{ url_for('create_device') }}" method="POST" class="space-y-4">
+            <div>
+                <label class="block text-sm text-slate-400 mb-1">Nome do Simulador</label>
+                <input type="text" name="name" placeholder="Ex: ESP32 Sala" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-indigo-500 outline-none" required>
+            </div>
+            <div>
+                <label class="block text-sm text-slate-400 mb-1">Tipo de Dispositivo</label>
+                <select name="device_type" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-indigo-500 outline-none">
+                    <option value="feeder">Alimentador (Habitat)</option>
+                    <option value="food_tank">Tanque de Ração (Principal)</option>
+                    <option value="water_tank">Tanque de Água (Principal)</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm text-slate-400 mb-1">ID do Habitat (Banco de Dados)</label>
+                <input type="number" name="feeder_id" placeholder="Ex: 1" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-indigo-500 outline-none" required>
+            </div>
+            <div>
+                <label class="block text-sm text-slate-400 mb-1">Token de Acesso</label>
+                <input type="text" name="token" placeholder="Cole o token aqui..." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-indigo-500 outline-none" required>
+            </div>
+            <button type="submit" class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-bold transition-colors">
+                Criar Simulador
+            </button>
+        </form>
+    </div>
+
+    <!-- Device List -->
+    <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+        {% for id, device in devices.items() %}
+        <div class="bg-slate-900 p-6 rounded-xl border border-slate-800 hover:border-indigo-500/50 transition-colors group relative">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h3 class="font-bold text-white text-lg">{{ device.name }}</h3>
+                    <p class="text-xs text-slate-500 font-mono">{{ device.id }} | {{ device.device_type|upper }}</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full {{ 'bg-emerald-500 shadow-lg shadow-emerald-500/50' if device.connected else 'bg-red-500' }}"></span>
+                    <span class="text-xs font-bold {{ 'text-emerald-500' if device.connected else 'text-red-500' }}">
+                        {{ 'CONECTADO' if device.connected else 'OFFLINE' }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="space-y-2 mb-6">
+                <div class="flex justify-between text-sm">
+                    <span class="text-slate-400">Bateria</span>
+                    <span class="{{ 'text-emerald-400' if device.battery_level > 20 else 'text-red-400' }}">{{ device.battery_level }}%</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="text-slate-400">Peso Gaveta</span>
+                    <span class="text-white">{{ device.drawer_weight }}g</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="text-slate-400">Último Log</span>
+                    <span class="text-xs text-slate-500 truncate max-w-[150px]" title="{{ device.last_log }}">{{ device.last_log }}</span>
+                </div>
+            </div>
+
+            <div class="flex gap-2">
+                <a href="{{ url_for('device_control', id=id) }}" class="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-white text-center rounded-lg text-sm font-medium transition-colors">
+                    Controlar
+                </a>
+                <form action="{{ url_for('delete_device', id=id) }}" method="POST">
+                    <button type="submit" class="p-2 bg-red-900/20 hover:bg-red-900/40 text-red-400 rounded-lg transition-colors">
+                        <i data-lucide="trash-2" class="w-5 h-5"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-span-full flex flex-col items-center justify-center py-12 text-slate-500 border-2 border-dashed border-slate-800 rounded-xl">
+            <i data-lucide="cpu" class="w-12 h-12 mb-4 opacity-50"></i>
+            <p>Nenhum simulador ativo.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

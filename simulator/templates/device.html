@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="mb-6 flex items-center gap-4">
+        <a href="{{ url_for('index') }}" class="p-2 bg-slate-800 rounded-lg text-slate-400 hover:text-white transition-colors">
+            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+        </a>
+        <div>
+            <h1 class="text-2xl font-bold text-white">{{ device.name }}</h1>
+            <p class="text-slate-400 text-sm font-mono">Sim ID: {{ device.id }} | Feeder ID: {{ device.feeder_id }}</p>
+        </div>
+        <div class="ml-auto flex items-center gap-2 px-3 py-1 bg-slate-900 rounded-full border border-slate-800">
+            <span class="w-2 h-2 rounded-full {{ 'bg-emerald-500 animate-pulse' if device.connected else 'bg-red-500' }}"></span>
+            <span class="text-xs font-bold {{ 'text-emerald-500' if device.connected else 'text-red-500' }}">
+                {{ 'CONECTADO' if device.connected else 'DESCONECTADO' }}
+            </span>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Controls -->
+        <div class="bg-slate-900 p-6 rounded-xl border border-slate-800">
+            <h2 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                <i data-lucide="sliders" class="w-5 h-5 text-indigo-500"></i>
+                Controles do Sensor
+            </h2>
+            
+            <form action="{{ url_for('update_device', id=device.id) }}" method="POST" class="space-y-6">
+                <div>
+                    <label class="block text-sm text-slate-400 mb-1">Token de Acesso</label>
+                    <input type="text" name="token" value="{{ device.token or '' }}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white font-mono text-sm">
+                </div>
+
+                {% if device.device_type == 'feeder' %}
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <label class="text-sm text-slate-400">Bateria (%)</label>
+                        <span class="text-sm font-bold text-white" id="batteryVal">{{ device.battery_level }}%</span>
+                    </div>
+                    <input type="range" name="battery_level" min="0" max="100" value="{{ device.battery_level }}" 
+                           class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                           oninput="document.getElementById('batteryVal').innerText = this.value + '%'">
+                </div>
+
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <label class="text-sm text-slate-400">Peso da Gaveta (g)</label>
+                        <span class="text-sm font-bold text-white" id="weightVal">{{ device.drawer_weight }}g</span>
+                    </div>
+                    <input type="range" name="drawer_weight" min="0" max="500" value="{{ device.drawer_weight }}" 
+                           class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                           oninput="document.getElementById('weightVal').innerText = this.value + 'g'">
+                    <p class="text-xs text-slate-500 mt-1">Simula a balança interna (LSH/LSL/LSLL)</p>
+                </div>
+                {% else %}
+                <!-- Tank Controls -->
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <label class="text-sm text-slate-400">Nível do Tanque (%)</label>
+                        <span class="text-sm font-bold text-white" id="tankLevelVal">{{ device.tank_level }}%</span>
+                    </div>
+                    <input type="range" name="tank_level" min="0" max="100" value="{{ device.tank_level }}" 
+                           class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                           oninput="document.getElementById('tankLevelVal').innerText = this.value + '%'">
+                </div>
+                
+                {% if device.device_type == 'food_tank' %}
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <label class="text-sm text-slate-400">Peso do Tanque (kg)</label>
+                        <span class="text-sm font-bold text-white" id="tankWeightVal">{{ device.tank_weight }}kg</span>
+                    </div>
+                    <input type="range" name="tank_weight" min="0" max="20" step="0.1" value="{{ device.tank_weight }}" 
+                           class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                           oninput="document.getElementById('tankWeightVal').innerText = this.value + 'kg'">
+                </div>
+                {% endif %}
+                {% endif %}
+
+                <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-bold transition-colors shadow-lg shadow-indigo-900/20">
+                    Atualizar Sensores
+                </button>
+            </form>
+        </div>
+
+        <!-- Live Status -->
+        <div class="space-y-6">
+            <!-- Hardware State -->
+            <div class="bg-slate-900 p-6 rounded-xl border border-slate-800">
+                <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <i data-lucide="activity" class="w-5 h-5 text-emerald-500"></i>
+                    Estado do Hardware
+                </h2>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-4 bg-slate-950 rounded-lg border border-slate-800 text-center">
+                        <p class="text-xs text-slate-500 uppercase mb-1">Porta (Motor)</p>
+                        <p class="text-xl font-bold {{ 'text-amber-500' if device.door_state == 'OPEN' else 'text-slate-300' }}">
+                            {{ 'ABERTA' if device.door_state == 'OPEN' else 'FECHADA' }}
+                        </p>
+                    </div>
+                    <div class="p-4 bg-slate-950 rounded-lg border border-slate-800 text-center">
+                        <p class="text-xs text-slate-500 uppercase mb-1">Atividade</p>
+                        <p class="text-xl font-bold {{ 'text-indigo-400 animate-pulse' if device.is_feeding or device.is_refilling else 'text-slate-300' }}">
+                            {{ 'ALIMENTANDO' if device.is_feeding else 'REABASTECENDO' if device.is_refilling else 'OCIOSO' }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logs -->
+            <div class="bg-slate-900 p-6 rounded-xl border border-slate-800">
+                <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <i data-lucide="terminal" class="w-5 h-5 text-slate-400"></i>
+                    Último Log
+                </h2>
+                <div class="p-4 bg-slate-950 rounded-lg border border-slate-800 font-mono text-sm text-emerald-400">
+                    > {{ device.last_log }}
+                </div>
+                <p class="text-xs text-slate-500 mt-2 text-center">A página precisa ser recarregada para ver novos logs.</p>
+                <button onclick="window.location.reload()" class="mt-2 w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-sm transition-colors">
+                    Atualizar Página
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
