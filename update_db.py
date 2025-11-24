@@ -37,6 +37,8 @@ def migrate():
         add_column("feeders", "block_name VARCHAR(64)")
         add_column("feeders", "water_mode VARCHAR(16) DEFAULT 'AUTO'")
         add_column("feeders", "water_valve_state VARCHAR(16) DEFAULT 'CLOSED'")
+        add_column("feeders", "last_stable_weight FLOAT DEFAULT 0.0")
+        add_column("feeders", "maintenance_mode BOOLEAN DEFAULT 0")
 
         # Tanks Table Updates
         add_column("tanks", "block_name VARCHAR(64)")

@@ -48,6 +48,10 @@ class Feeder(db.Model):
     block_name = db.Column(db.String(64), nullable=True) # Grouping (e.g., "Block A")
     water_mode = db.Column(db.String(16), default='AUTO') # AUTO, MANUAL
     water_valve_state = db.Column(db.String(16), default='CLOSED') # OPEN, CLOSED
+    
+    # Advanced Logic
+    last_stable_weight = db.Column(db.Float, default=0.0) # For Hysteresis
+    maintenance_mode = db.Column(db.Boolean, default=False) # Suppress Alarms
 
     def __init__(self, name, food_tank_id=None, water_tank_id=None, avatar='cat'):
         self.name = name

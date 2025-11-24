@@ -60,8 +60,19 @@ def report_status(feeder, id):
     
     # 1. Food Scale Logic
     if 'weight' in data:
-        weight = float(data['weight'])
-        feeder.drawer_weight = weight
+        raw_weight = float(data['weight'])
+        
+        # Hysteresis Logic (Filter noise)
+        # Only update if change > 2g (assuming high precision) or if it's the first reading
+        last_weight = feeder.last_stable_weight or 0.0
+        if abs(raw_weight - last_weight) > 2.0:
+            feeder.drawer_weight = raw_weight
+            feeder.last_stable_weight = raw_weight
+        else:
+            # Keep old weight to avoid jitter
+            pass
+            
+        weight = feeder.drawer_weight or raw_weight
         
         # Thresholds
         warning = feeder.warning_weight or 80.0
@@ -77,16 +88,12 @@ def report_status(feeder, id):
             new_state = 'LSLL'
             new_status = 'CRITICAL'
 
-        if feeder.status != 'TRIP':
+        if feeder.status != 'TRIP' and not feeder.maintenance_mode:
             # Check Block Status (Interlock: 2 Feeders in LSL -> Block Critical)
             if feeder.block_name:
                 block_feeders = Feeder.query.filter_by(block_name=feeder.block_name).all()
                 lsl_count = sum(1 for f in block_feeders if f.sensor_state == 'LSL' and f.id != feeder.id)
                 if new_state == 'LSL' and lsl_count >= 1:
-                    # 2nd feeder in LSL -> Block Critical? 
-                    # User said: "2 gavetas em atenção -> bloco em alerta crítico"
-                    # We can set this feeder to CRITICAL or handle a Block Alarm entity.
-                    # For now, let's mark this feeder as CRITICAL to escalate.
                     new_status = 'CRITICAL' 
                     print(f"Block {feeder.block_name}: Multiple Feeders in LSL. Escalating.")
 
@@ -98,11 +105,9 @@ def report_status(feeder, id):
                     can_refill = True
                     if feeder.food_tank:
                         # Main Tank Critical < 20kg (User Spec)
-                        # Assuming tank.current_weight is in kg
                         if feeder.food_tank.current_weight <= 20.0: 
                             can_refill = False
                             print(f"Feeder {feeder.id}: Food LSLL but Main Food Tank Critical (<20kg)!")
-                            # Trigger Block Alarm?
                     
                     if can_refill:
                         # Send SMART_REFILL command
@@ -114,6 +119,13 @@ def report_status(feeder, id):
 
             feeder.sensor_state = new_state
             feeder.status = new_status
+        elif feeder.maintenance_mode:
+             # In Maintenance: Status is always NORMAL or WARNING, never CRITICAL/TRIP automatically?
+             # Or just don't escalate.
+             feeder.sensor_state = new_state
+             # Keep status as is or force NORMAL?
+             # "Suspender todos os alarmes" -> Force NORMAL
+             feeder.status = 'NORMAL'
 
     # 2. Water Sensor Logic
     if 'water_sensor' in data:
@@ -121,7 +133,7 @@ def report_status(feeder, id):
         w_state = data['water_sensor']
         feeder.water_sensor_state = w_state
         
-        if w_state == 'LSLL': # Low
+        if w_state == 'LSLL' and not feeder.maintenance_mode: # Low & Not Maintenance
             # Water Critical -> Attempt Refill
             if feeder.water_mode == 'AUTO':
                 # Check Main Water Tank Level (if linked)

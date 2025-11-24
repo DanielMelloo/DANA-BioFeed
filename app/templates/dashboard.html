@@ -21,7 +21,14 @@
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     {% for feeder in feeders %}
     <!-- Feeder Card -->
-    <div class="bg-slate-900 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-slate-800 relative overflow-visible group">
+    <div class="bg-slate-900 rounded-xl shadow-sm hover:shadow-md transition-all border relative overflow-visible group
+        {{ 'border-red-500 shadow-lg shadow-red-900/20 animate-pulse' if feeder.status == 'CRITICAL' else 'border-slate-800' }}">
+        
+        {% if feeder.status == 'CRITICAL' %}
+        <div class="absolute -top-3 right-4 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm z-20 flex items-center gap-1">
+            <i data-lucide="alert-triangle" class="w-3 h-3"></i> CRÍTICO
+        </div>
+        {% endif %}
         
         <!-- Floating Avatar -->
         <div class="absolute -top-4 -left-2 w-16 h-16 bg-slate-900 rounded-full p-1 shadow-md z-10">

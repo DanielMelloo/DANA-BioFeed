@@ -109,6 +109,7 @@ def update_feeder(id):
     
     feeder.is_locked = 'is_locked' in request.form
     feeder.water_locked = 'water_locked' in request.form
+    feeder.maintenance_mode = 'maintenance_mode' in request.form
     
     # Manual Water Control
     if 'manual_water' in request.form:
