@@ -93,6 +93,57 @@
                     </div>
                 </div>
 
+                <!-- Block & Water Settings -->
+                <div class="bg-slate-900 rounded-xl border border-slate-800 p-6 mb-6">
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <i data-lucide="grid" class="w-5 h-5 text-purple-400"></i>
+                        Bloco e Água
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Block Name -->
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-1">Nome do Bloco</label>
+                            <input type="text" name="block_name" value="{{ feeder.block_name or '' }}" placeholder="Ex: Bloco A" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-indigo-500 outline-none">
+                            <p class="text-xs text-slate-500 mt-1">Agrupa gavetas e dutos para intertravamento.</p>
+                        </div>
+
+                        <!-- Water Mode -->
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-2">Modo da Água</label>
+                            <div class="flex p-1 bg-slate-800 rounded-lg">
+                                <label class="flex-1 cursor-pointer">
+                                    <input type="radio" name="water_mode" value="AUTO" class="peer sr-only" {{ 'checked' if feeder.water_mode == 'AUTO' }}>
+                                    <div class="text-center py-2 rounded-md text-sm font-medium text-slate-400 peer-checked:bg-blue-600 peer-checked:text-white transition-all">
+                                        Automático
+                                    </div>
+                                </label>
+                                <label class="flex-1 cursor-pointer">
+                                    <input type="radio" name="water_mode" value="MANUAL" class="peer sr-only" {{ 'checked' if feeder.water_mode == 'MANUAL' }}>
+                                    <div class="text-center py-2 rounded-md text-sm font-medium text-slate-400 peer-checked:bg-amber-600 peer-checked:text-white transition-all">
+                                        Manual
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Manual Water Control -->
+                    <div class="mt-6 pt-6 border-t border-slate-800">
+                        <label class="block text-sm font-medium text-slate-400 mb-2">Controle Manual da Solenoide</label>
+                        <div class="flex gap-4">
+                            <button type="submit" name="manual_water" value="OPEN" class="flex-1 py-2 bg-emerald-900/30 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-900/50 rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
+                                <i data-lucide="droplet" class="w-4 h-4"></i> Abrir (Encher)
+                            </button>
+                            <button type="submit" name="manual_water" value="CLOSE" class="flex-1 py-2 bg-red-900/30 text-red-400 border border-red-500/30 hover:bg-red-900/50 rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
+                                <i data-lucide="x-circle" class="w-4 h-4"></i> Fechar (Parar)
+                            </button>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-2 text-center">
+                            Estado Atual: <span class="font-mono text-white">{{ feeder.water_valve_state }}</span>
+                        </p>
+                    </div>
+                </div>
+
                 <!-- Safety Shield -->
                 <div class="bg-slate-900 rounded-xl border border-slate-800 p-6 mb-6 relative overflow-hidden">
                     <div class="absolute top-0 right-0 p-4 opacity-10">

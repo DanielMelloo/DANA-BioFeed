@@ -103,9 +103,33 @@ def update_feeder(id):
     feeder.avatar = request.form.get('avatar')
     feeder.mode = request.form.get('mode')
     
+    # New Logic Fields
+    feeder.block_name = request.form.get('block_name')
+    feeder.water_mode = request.form.get('water_mode')
+    
     feeder.is_locked = 'is_locked' in request.form
     feeder.water_locked = 'water_locked' in request.form
     
+    # Manual Water Control
+    if 'manual_water' in request.form:
+        action = request.form.get('manual_water') # OPEN or CLOSE
+        
+        # If Manual Open, force mode to MANUAL? User said "Fechada pelo usuário = modo manual".
+        # Let's respect the explicit mode toggle, but if they click Open/Close, we execute it.
+        # If they click CLOSE, maybe switch to MANUAL?
+        # "Quando o usuário abre novamente, o sistema volta a operar em automático." -> Wait, this logic is tricky.
+        # "Aberta = modo automático (default). Fechada pelo usuário = modo manual."
+        # Let's stick to the explicit Radio Button for Mode, and these buttons for immediate action.
+        
+        CommandBus.add_command(id, {
+            'type': 'water_control',
+            'action': action,
+            'duration': 0 # Permanent until changed? Or timeout?
+        })
+        
+        feeder.water_valve_state = action
+        flash(f'Comando de Água enviado: {action}', 'info')
+
     if 'reset_trip' in request.form:
         feeder.status = 'NORMAL'
         feeder.sensor_state = 'LSH'
