@@ -7,6 +7,7 @@ from app.services.command_bus import CommandBus
 from datetime import datetime
 from flask_login import login_required, current_user
 import json
+from flask import jsonify
 
 dashboard_bp = Blueprint('dashboard', __name__)
 

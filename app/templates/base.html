@@ -138,49 +138,13 @@
                     </div>
                 </div>
                 
-                <div class="flex gap-2">
-                    <!-- Theme Toggle (Bottom Left) -->
-                    <button onclick="toggleTheme()" class="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors" title="Alternar Tema">
-                        <i data-lucide="{{ 'moon' if current_user.theme == 'light' else 'sun' }}" class="w-4 h-4"></i>
-                        <span class="text-xs font-medium">{{ 'Escuro' if current_user.theme == 'light' else 'Claro' }}</span>
-                    </button>
 
-                    <a href="{{ url_for('auth.logout') }}" class="flex items-center justify-center px-3 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 rounded-lg transition-colors" title="Sair">
-                        <i data-lucide="log-out" class="w-4 h-4"></i>
-                    </a>
-                </div>
                 {% else %}
                     <div class="px-4 py-3 text-slate-500 text-sm italic text-center">
                         Faça login para acessar
                     </div>
                 {% endif %}
-            </nav>
 
-            <div class="p-4 border-t border-slate-800">
-                {% if current_user.is_authenticated %}
-                <div class="mb-4 px-4 flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-sm">
-                        {{ current_user.username[0]|upper }}
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-white">{{ current_user.username }}</p>
-                        <p class="text-xs text-slate-500">{{ 'Administrador' if current_user.is_admin else 'Usuário' }}</p>
-                    </div>
-                </div>
-                <a href="{{ url_for('auth.logout') }}" class="flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-900/20 rounded-lg w-full transition-colors">
-                    <i data-lucide="log-out" class="w-5 h-5"></i>
-                    <span>Sair</span>
-                </a>
-                {% else %}
-                <a href="{{ url_for('auth.login') }}" class="flex items-center gap-3 px-4 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg w-full transition-colors justify-center font-medium">
-                    <span>Entrar</span>
-                    <i data-lucide="log-in" class="w-4 h-4"></i>
-                </a>
-                {% endif %}
-                <div class="mt-4 px-4 text-xs text-slate-500 text-center">
-                    v1.0.0 • DANA BioFeed
-                </div>
-            </div>
         </aside>
 
         <!-- Main Content -->
@@ -202,8 +166,44 @@
         </main>
     </div>
 
+    <!-- HUD Theme Toggle -->
+    <button onclick="toggleTheme()" class="fixed bottom-6 right-6 z-50 w-14 h-14 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full shadow-lg shadow-indigo-900/30 flex items-center justify-center transition-all hover:scale-110 active:scale-95" title="Alternar Tema">
+        <i id="theme-icon" data-lucide="{{ 'moon' if current_user.theme == 'light' else 'sun' }}" class="w-6 h-6"></i>
+    </button>
+
     <script>
         lucide.createIcons();
+
+        async function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.classList.contains('dark');
+            const newTheme = isDark ? 'light' : 'dark';
+            
+            // Toggle Class
+            if (newTheme === 'dark') {
+                html.classList.add('dark');
+            } else {
+                html.classList.remove('dark');
+            }
+            
+            // Update Icon
+            const icon = document.getElementById('theme-icon');
+            if (icon) {
+                icon.setAttribute('data-lucide', newTheme === 'dark' ? 'sun' : 'moon');
+                lucide.createIcons();
+            }
+
+            // Save to Backend
+            try {
+                await fetch("{{ url_for('dashboard.update_theme') }}", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ theme: newTheme })
+                });
+            } catch (err) {
+                console.error('Failed to save theme', err);
+            }
+        }
 
         async function copyToClipboard(text, buttonElement) {
             try {
