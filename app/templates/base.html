@@ -60,71 +60,95 @@
         }
     </script>
 </head>
-<body class="bg-slate-950 text-slate-200 font-sans antialiased selection:bg-indigo-500 selection:text-white">
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-200 font-sans antialiased selection:bg-indigo-500 selection:text-white transition-colors duration-300">
     <div class="min-h-screen flex flex-col md:flex-row">
         <!-- Mobile Header -->
-        <header class="md:hidden bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center sticky top-0 z-50">
+        <header class="md:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 p-4 flex justify-between items-center sticky top-0 z-50">
             <div class="flex items-center gap-3">
                 <img src="{{ url_for('static', filename='logo.png') }}" alt="DANA BioFeed Logo" class="w-8 h-8 rounded-lg">
-                <span class="font-bold text-xl text-white tracking-tight">DANA BioFeed</span>
+                <span class="font-bold text-xl text-slate-900 dark:text-white tracking-tight">DANA BioFeed</span>
             </div>
-            <button onclick="document.getElementById('sidebar').classList.toggle('-translate-x-full')" class="text-slate-400 hover:text-white transition-colors">
+            <button onclick="document.getElementById('sidebar').classList.toggle('-translate-x-full')" class="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-white transition-colors">
                 <i data-lucide="menu" class="w-6 h-6"></i>
             </button>
         </header>
 
         <!-- Sidebar -->
-        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-slate-900 border-r border-slate-800 transform -translate-x-full transition-transform duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col">
-            <div class="p-6 border-b border-slate-800 flex items-center gap-3">
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 transform -translate-x-full transition-transform duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col shadow-xl md:shadow-none">
+            <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3">
                 <img src="{{ url_for('static', filename='logo.png') }}" alt="DANA BioFeed Logo" class="w-8 h-8 rounded-lg">
                 <div>
-                    <h1 class="font-bold text-xl text-white tracking-tight">DANA BioFeed</h1>
-                    <p class="text-xs text-emerald-500 font-medium">Sistema Online</p>
+                    <h1 class="font-bold text-xl text-slate-900 dark:text-white tracking-tight">DANA BioFeed</h1>
+                    <p class="text-xs text-emerald-600 dark:text-emerald-500 font-medium">Sistema Online</p>
                 </div>
             </div>
 
             <nav class="flex-1 p-4 overflow-y-auto space-y-1">
                 {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('dashboard.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors {{ 'bg-indigo-900/30 text-indigo-400 font-medium border-r-4 border-indigo-500' if request.endpoint == 'dashboard.index' else 'text-slate-400 hover:bg-slate-800 hover:text-slate-200' }}">
+                    <a href="{{ url_for('dashboard.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors {{ 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-medium border-r-4 border-indigo-500' if request.endpoint == 'dashboard.index' else 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200' }}">
                         <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
                         <span>Painel</span>
                     </a>
-                    <a href="{{ url_for('dashboard.logs') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors {{ 'bg-indigo-900/30 text-indigo-400 font-medium border-r-4 border-indigo-500' if request.endpoint == 'dashboard.logs' else 'text-slate-400 hover:bg-slate-800 hover:text-slate-200' }}">
+                    <a href="{{ url_for('dashboard.logs') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors {{ 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-medium border-r-4 border-indigo-500' if request.endpoint == 'dashboard.logs' else 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200' }}">
                         <i data-lucide="scroll-text" class="w-5 h-5"></i>
                         <span>Logs Globais</span>
                     </a>
-                    <a href="{{ url_for('dashboard.tanks') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors {{ 'bg-indigo-900/30 text-indigo-400 font-medium border-r-4 border-indigo-500' if request.endpoint == 'dashboard.tanks' else 'text-slate-400 hover:bg-slate-800 hover:text-slate-200' }}">
+                    <a href="{{ url_for('dashboard.tanks') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors {{ 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-medium border-r-4 border-indigo-500' if request.endpoint == 'dashboard.tanks' else 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200' }}">
                         <i data-lucide="container" class="w-5 h-5"></i>
                         <span>Tanques</span>
                     </a>
-                    <a href="{{ url_for('dashboard.register_page') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors {{ 'bg-indigo-900/30 text-indigo-400 font-medium border-r-4 border-indigo-500' if request.endpoint == 'dashboard.register_page' else 'text-slate-400 hover:bg-slate-800 hover:text-slate-200' }}">
+                    <a href="{{ url_for('dashboard.register_page') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors {{ 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-medium border-r-4 border-indigo-500' if request.endpoint == 'dashboard.register_page' else 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200' }}">
                         <i data-lucide="plus-circle" class="w-5 h-5"></i>
                         <span>Novo Dispositivo</span>
                     </a>
                     
                     {% if current_user.is_admin %}
-                    <a href="{{ url_for('dashboard.firmware') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors {{ 'bg-indigo-900/30 text-indigo-400 font-medium border-r-4 border-indigo-500' if request.endpoint == 'dashboard.firmware' else 'text-slate-400 hover:bg-slate-800 hover:text-slate-200' }}">
+                    <a href="{{ url_for('dashboard.firmware') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors {{ 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-medium border-r-4 border-indigo-500' if request.endpoint == 'dashboard.firmware' else 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200' }}">
                         <i data-lucide="cpu" class="w-5 h-5"></i>
                         <span>Gerador Firmware</span>
                     </a>
-                    <a href="{{ url_for('dashboard.settings') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors {{ 'bg-indigo-900/30 text-indigo-400 font-medium border-r-4 border-indigo-500' if request.endpoint == 'dashboard.settings' else 'text-slate-400 hover:bg-slate-800 hover:text-slate-200' }}">
+                    <a href="{{ url_for('dashboard.settings') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors {{ 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-medium border-r-4 border-indigo-500' if request.endpoint == 'dashboard.settings' else 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200' }}">
                         <i data-lucide="shield" class="w-5 h-5"></i>
                         <span>Administração</span>
                     </a>
                     {% endif %}
 
-                    <div class="my-4 border-t border-slate-800 mx-4"></div>
+                    <div class="my-4 border-t border-slate-200 dark:border-slate-800 mx-4"></div>
 
-                    <a href="{{ url_for('dashboard.wiring') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors {{ 'bg-indigo-900/30 text-indigo-400 font-medium border-r-4 border-indigo-500' if request.endpoint == 'dashboard.wiring' else 'text-slate-400 hover:bg-slate-800 hover:text-slate-200' }}">
+                    <a href="{{ url_for('dashboard.wiring') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors {{ 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-medium border-r-4 border-indigo-500' if request.endpoint == 'dashboard.wiring' else 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200' }}">
                         <i data-lucide="cable" class="w-5 h-5"></i>
                         <span>Esquema de Ligação</span>
                     </a>
+                {% else %}
+                    <div class="px-4 py-3 text-slate-500 text-sm italic text-center">
+                        Faça login para acessar
+                    </div>
+                {% endif %}
+            </nav>
 
-                    <!-- Theme Toggle -->
-                    <button onclick="toggleTheme()" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-slate-400 hover:bg-slate-800 hover:text-slate-200">
-                        <i data-lucide="{{ 'sun' if current_user.theme == 'dark' else 'moon' }}" class="w-5 h-5"></i>
-                        <span>Modo {{ 'Claro' if current_user.theme == 'dark' else 'Escuro' }}</span>
+            <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+                {% if current_user.is_authenticated %}
+                <div class="mb-4 px-4 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
+                        {{ current_user.username[0]|upper }}
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-slate-900 dark:text-white">{{ current_user.username }}</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-500">{{ 'Administrador' if current_user.is_admin else 'Usuário' }}</p>
+                    </div>
+                </div>
+                
+                <div class="flex gap-2">
+                    <!-- Theme Toggle (Bottom Left) -->
+                    <button onclick="toggleTheme()" class="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors" title="Alternar Tema">
+                        <i data-lucide="{{ 'moon' if current_user.theme == 'light' else 'sun' }}" class="w-4 h-4"></i>
+                        <span class="text-xs font-medium">{{ 'Escuro' if current_user.theme == 'light' else 'Claro' }}</span>
                     </button>
+
+                    <a href="{{ url_for('auth.logout') }}" class="flex items-center justify-center px-3 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 rounded-lg transition-colors" title="Sair">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                    </a>
+                </div>
                 {% else %}
                     <div class="px-4 py-3 text-slate-500 text-sm italic text-center">
                         Faça login para acessar

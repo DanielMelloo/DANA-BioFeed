@@ -3,11 +3,11 @@
 {% block content %}
 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
     <div>
-        <h1 class="text-2xl font-bold text-white">Painel de Controle</h1>
-        <p class="text-slate-400">Visão geral de todos os seus habitats.</p>
+        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Painel de Controle</h1>
+        <p class="text-slate-500 dark:text-slate-400">Visão geral de todos os seus habitats.</p>
     </div>
     <div class="flex gap-3">
-        <a href="{{ url_for('dashboard.index') }}" class="flex items-center gap-2 px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white font-medium transition-colors">
+        <a href="{{ url_for('dashboard.index') }}" class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-indigo-600 dark:hover:text-white font-medium transition-colors shadow-sm">
             <i data-lucide="refresh-cw" class="w-4 h-4"></i>
             Atualizar
         </a>
@@ -21,8 +21,8 @@
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     {% for feeder in feeders %}
     <!-- Feeder Card -->
-    <div class="bg-slate-900 rounded-xl shadow-sm hover:shadow-md transition-all border relative overflow-visible group
-        {{ 'border-red-500 shadow-lg shadow-red-900/20 animate-pulse' if feeder.status == 'CRITICAL' else 'border-slate-800' }}">
+    <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm hover:shadow-md transition-all border relative overflow-visible group
+        {{ 'border-red-500 shadow-lg shadow-red-900/20 animate-pulse' if feeder.status == 'CRITICAL' else 'border-slate-200 dark:border-slate-800' }}">
         
         {% if feeder.status == 'CRITICAL' %}
         <div class="absolute -top-3 right-4 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm z-20 flex items-center gap-1">
@@ -31,8 +31,8 @@
         {% endif %}
         
         <!-- Floating Avatar -->
-        <div class="absolute -top-4 -left-2 w-16 h-16 bg-slate-900 rounded-full p-1 shadow-md z-10">
-            <div class="w-full h-full rounded-full bg-slate-800 flex items-center justify-center overflow-hidden border-2 border-slate-700">
+        <div class="absolute -top-4 -left-2 w-16 h-16 bg-white dark:bg-slate-900 rounded-full p-1 shadow-md z-10">
+            <div class="w-full h-full rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden border-2 border-slate-200 dark:border-slate-700">
                 {% if feeder.avatar == 'squirrel' %}
                     <img src="https://cdn-icons-png.flaticon.com/512/2316/2316669.png" alt="Esquilo" class="w-10 h-10 object-cover">
                 {% elif feeder.avatar == 'mouse' %}
@@ -40,7 +40,7 @@
                 {% elif feeder.avatar == 'twister' %}
                     <img src="https://cdn-icons-png.flaticon.com/512/5228/5228693.png" alt="Rato (Twister)" class="w-10 h-10 object-cover">
                 {% else %}
-                    <i data-lucide="box" class="w-8 h-8 text-slate-500"></i>
+                    <i data-lucide="box" class="w-8 h-8 text-slate-400 dark:text-slate-500"></i>
                 {% endif %}
             </div>
         </div>
@@ -48,15 +48,15 @@
         <!-- Header -->
         <div class="pl-16 pr-4 pt-4 pb-3 flex justify-between items-start">
             <div>
-                <h3 class="text-lg font-bold text-white leading-tight">{{ feeder.name }}</h3>
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white leading-tight">{{ feeder.name }}</h3>
                 <div class="flex items-center gap-2 mt-1">
                     <!-- Online Status -->
-                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide {{ 'bg-emerald-900/30 text-emerald-400 border border-emerald-800' if feeder.online else 'bg-slate-800 text-slate-500 border border-slate-700' }}">
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide {{ 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800' if feeder.online else 'bg-slate-100 dark:bg-slate-800 text-slate-500 border border-slate-200 dark:border-slate-700' }}">
                         <span class="w-1.5 h-1.5 rounded-full {{ 'bg-emerald-500' if feeder.online else 'bg-slate-500' }}"></span>
                         {{ 'ONLINE' if feeder.online else 'OFFLINE' }}
                     </span>
                     <!-- Mode -->
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-indigo-900/30 text-indigo-400 border border-indigo-800">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800">
                         {{ 'TIMER' if feeder.mode == 'interval' else 'AGENDA' }}
                     </span>
                 </div>
@@ -70,21 +70,21 @@
         </div>
 
         <!-- Main Tanks Section -->
-        <div class="px-4 py-2 bg-slate-950/30 border-y border-slate-800">
+        <div class="px-4 py-2 bg-slate-50 dark:bg-slate-950/30 border-y border-slate-200 dark:border-slate-800">
             <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Tanques Principais</p>
             <div class="space-y-2">
                 <!-- Main Food Tank -->
                 {% if feeder.food_tank %}
                 <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-2 text-xs text-slate-300">
+                    <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
                         <i data-lucide="package" class="w-3 h-3 text-amber-500"></i>
                         <span class="truncate max-w-[100px]" title="{{ feeder.food_tank.name }}">{{ feeder.food_tank.name }}</span>
                     </div>
                     <div class="flex items-center gap-2">
-                        <div class="w-20 h-1.5 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+                        <div class="w-20 h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden border border-slate-300 dark:border-slate-700">
                             <div class="h-full bg-amber-500 rounded-full" style="width: {{ feeder.food_tank.level }}%"></div>
                         </div>
-                        <span class="text-[10px] font-mono text-slate-400 w-8 text-right">{{ feeder.food_tank.level }}%</span>
+                        <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400 w-8 text-right">{{ feeder.food_tank.level }}%</span>
                     </div>
                 </div>
                 {% endif %}
@@ -92,17 +92,17 @@
                 <!-- Main Water Tank -->
                 {% if feeder.water_tank %}
                 <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-2 text-xs text-slate-300">
+                    <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
                         <i data-lucide="droplets" class="w-3 h-3 text-blue-500"></i>
                         <span class="truncate max-w-[100px]" title="{{ feeder.water_tank.name }}">{{ feeder.water_tank.name }}</span>
                     </div>
                     <div class="flex items-center gap-2">
                         <div class="flex gap-1">
-                            <div class="w-3 h-3 rounded-sm border border-slate-700 {{ 'bg-emerald-500' if feeder.water_tank.level > 80 else 'bg-amber-500' if feeder.water_tank.level > 50 else 'bg-red-500' if feeder.water_tank.level > 20 else 'bg-red-900 animate-pulse' }}"></div>
-                            <div class="w-3 h-3 rounded-sm border border-slate-700 {{ 'bg-emerald-500' if feeder.water_tank.level > 80 else 'bg-amber-500' if feeder.water_tank.level > 50 else 'bg-slate-800' }}"></div>
-                            <div class="w-3 h-3 rounded-sm border border-slate-700 {{ 'bg-emerald-500' if feeder.water_tank.level > 80 else 'bg-slate-800' }}"></div>
+                            <div class="w-3 h-3 rounded-sm border border-slate-300 dark:border-slate-700 {{ 'bg-emerald-500' if feeder.water_tank.level > 80 else 'bg-amber-500' if feeder.water_tank.level > 50 else 'bg-red-500' if feeder.water_tank.level > 20 else 'bg-red-900 animate-pulse' }}"></div>
+                            <div class="w-3 h-3 rounded-sm border border-slate-300 dark:border-slate-700 {{ 'bg-emerald-500' if feeder.water_tank.level > 80 else 'bg-amber-500' if feeder.water_tank.level > 50 else 'bg-slate-200 dark:bg-slate-800' }}"></div>
+                            <div class="w-3 h-3 rounded-sm border border-slate-300 dark:border-slate-700 {{ 'bg-emerald-500' if feeder.water_tank.level > 80 else 'bg-slate-200 dark:bg-slate-800' }}"></div>
                         </div>
-                        <span class="text-[10px] font-mono text-slate-400 w-8 text-right">{{ feeder.water_tank.level }}%</span>
+                        <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400 w-8 text-right">{{ feeder.water_tank.level }}%</span>
                     </div>
                 </div>
                 {% endif %}
@@ -114,34 +114,34 @@
             <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Sensores do Habitat</p>
             <div class="flex flex-wrap gap-2">
                 <!-- Drawer Weight -->
-                <div class="flex items-center gap-1.5 px-2 py-1 rounded border text-xs font-medium whitespace-nowrap bg-slate-800 border-slate-700 text-slate-300" title="Peso da Gaveta">
+                <div class="flex items-center gap-1.5 px-2 py-1 rounded border text-xs font-medium whitespace-nowrap bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300" title="Peso da Gaveta">
                     <i data-lucide="scale" class="w-3 h-3"></i>
                     <span>{{ feeder.drawer_weight }}g</span>
                 </div>
                 
                 <!-- Food Sensor -->
                 <div class="flex items-center gap-1.5 px-2 py-1 rounded border text-xs font-medium whitespace-nowrap
-                    {{ 'bg-emerald-900/20 border-emerald-800 text-emerald-400' if feeder.sensor_state == 'LSH' else 'bg-amber-900/20 border-amber-800 text-amber-400' if feeder.sensor_state == 'LSL' else 'bg-red-900/20 border-red-800 text-red-400' }}">
+                    {{ 'bg-emerald-100 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400' if feeder.sensor_state == 'LSH' else 'bg-amber-100 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400' if feeder.sensor_state == 'LSL' else 'bg-red-100 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-700 dark:text-red-400' }}">
                     <i data-lucide="cookie" class="w-3 h-3"></i>
                     <span>{{ 'OK' if feeder.sensor_state == 'LSH' else 'BAIXO' if feeder.sensor_state == 'LSL' else 'CRÍTICO' }}</span>
                 </div>
                 
                 <!-- Water Sensor -->
                 <div class="flex items-center gap-1.5 px-2 py-1 rounded border text-xs font-medium whitespace-nowrap
-                    {{ 'bg-emerald-900/20 border-emerald-800 text-emerald-400' if feeder.water_sensor_state == 'LSH' else 'bg-red-900/20 border-red-800 text-red-400' }}">
+                    {{ 'bg-emerald-100 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400' if feeder.water_sensor_state == 'LSH' else 'bg-red-100 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-700 dark:text-red-400' }}">
                     <i data-lucide="droplets" class="w-3 h-3"></i>
                     <span>{{ 'OK' if feeder.water_sensor_state == 'LSH' else 'CRÍTICO' }}</span>
                 </div>
 
                 <!-- Locks -->
                 {% if feeder.is_locked %}
-                <div class="flex items-center gap-1 px-2 py-1 rounded border bg-red-900/20 border-red-800 text-red-400 text-xs font-bold">
+                <div class="flex items-center gap-1 px-2 py-1 rounded border bg-red-100 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-xs font-bold">
                     <i data-lucide="lock" class="w-3 h-3"></i>
                     <span>RAÇÃO</span>
                 </div>
                 {% endif %}
                 {% if feeder.water_locked %}
-                <div class="flex items-center gap-1 px-2 py-1 rounded border bg-blue-900/20 border-blue-800 text-blue-400 text-xs font-bold">
+                <div class="flex items-center gap-1 px-2 py-1 rounded border bg-blue-100 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400 text-xs font-bold">
                     <i data-lucide="lock" class="w-3 h-3"></i>
                     <span>ÁGUA</span>
                 </div>
@@ -155,10 +155,10 @@
                 <div>
                     <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Próxima Refeição</p>
                     <div class="flex items-center gap-2">
-                        <div class="bg-indigo-900/30 text-indigo-400 p-1.5 rounded-lg border border-indigo-500/20">
+                        <div class="bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 p-1.5 rounded-lg border border-indigo-200 dark:border-indigo-500/20">
                             <i data-lucide="clock" class="w-4 h-4"></i>
                         </div>
-                        <span class="text-xl font-bold text-white">
+                        <span class="text-xl font-bold text-slate-900 dark:text-white">
                             {% if feeder.next_run %}
                                 {{ feeder.next_run.strftime('%H:%M') }}
                             {% else %}
@@ -180,7 +180,7 @@
             </div>
 
             <!-- Progress Bar (Next Feed) -->
-            <div class="relative w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+            <div class="relative w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
                 <div class="absolute top-0 left-0 h-full bg-indigo-600 rounded-full transition-all duration-500" style="width: 65%"></div>
             </div>
         </div>
@@ -190,7 +190,7 @@
             <form action="{{ url_for('dashboard.feed_now', id=feeder.id) }}" method="POST" class="flex-1">
                 <button type="submit" 
                     class="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg font-bold transition-all shadow-sm
-                    {{ 'bg-slate-800 text-slate-600 cursor-not-allowed border border-slate-700' if feeder.is_locked or not feeder.online else 'bg-indigo-600 text-white hover:bg-indigo-500 shadow-lg shadow-indigo-900/20' }}"
+                    {{ 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed border border-slate-200 dark:border-slate-700' if feeder.is_locked or not feeder.online else 'bg-indigo-600 text-white hover:bg-indigo-500 shadow-lg shadow-indigo-900/20' }}"
                     {{ 'disabled' if feeder.is_locked or not feeder.online }}>
                     {% if feeder.is_locked %}
                         <i data-lucide="lock" class="w-4 h-4"></i>
@@ -203,18 +203,18 @@
             </form>
             
             <a href="{{ url_for('dashboard.feeder_detail', id=feeder.id) }}" 
-               class="flex items-center justify-center w-12 bg-slate-800 border border-slate-700 text-slate-400 rounded-lg hover:bg-slate-700 hover:text-indigo-400 transition-colors shadow-sm">
+               class="flex items-center justify-center w-12 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors shadow-sm">
                 <i data-lucide="settings-2" class="w-5 h-5"></i>
             </a>
         </div>
     </div>
     {% else %}
     <!-- Empty State -->
-    <div class="col-span-full flex flex-col items-center justify-center py-12 text-slate-400 bg-slate-900 rounded-xl border border-dashed border-slate-700">
-        <div class="bg-slate-800 p-4 rounded-full shadow-sm mb-4">
+    <div class="col-span-full flex flex-col items-center justify-center py-12 text-slate-400 bg-white dark:bg-slate-900 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
+        <div class="bg-slate-100 dark:bg-slate-800 p-4 rounded-full shadow-sm mb-4">
             <i data-lucide="plus" class="w-8 h-8 text-indigo-500"></i>
         </div>
-        <p class="text-lg font-medium text-slate-300">Nenhum habitat encontrado</p>
+        <p class="text-lg font-medium text-slate-900 dark:text-slate-300">Nenhum habitat encontrado</p>
         <p class="text-sm mb-6 text-slate-500">Conecte seu primeiro habitat para começar.</p>
         <a href="{{ url_for('dashboard.register_page') }}" class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors">
             Adicionar Novo
