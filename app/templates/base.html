@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark">
+<!DOCTYPE html>
+<html lang="pt-BR" class="{{ current_user.theme if current_user.is_authenticated else 'dark' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -111,6 +112,19 @@
                         <span>Administração</span>
                     </a>
                     {% endif %}
+
+                    <div class="my-4 border-t border-slate-800 mx-4"></div>
+
+                    <a href="{{ url_for('dashboard.wiring') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors {{ 'bg-indigo-900/30 text-indigo-400 font-medium border-r-4 border-indigo-500' if request.endpoint == 'dashboard.wiring' else 'text-slate-400 hover:bg-slate-800 hover:text-slate-200' }}">
+                        <i data-lucide="cable" class="w-5 h-5"></i>
+                        <span>Esquema de Ligação</span>
+                    </a>
+
+                    <!-- Theme Toggle -->
+                    <button onclick="toggleTheme()" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-slate-400 hover:bg-slate-800 hover:text-slate-200">
+                        <i data-lucide="{{ 'sun' if current_user.theme == 'dark' else 'moon' }}" class="w-5 h-5"></i>
+                        <span>Modo {{ 'Claro' if current_user.theme == 'dark' else 'Escuro' }}</span>
+                    </button>
                 {% else %}
                     <div class="px-4 py-3 text-slate-500 text-sm italic text-center">
                         Faça login para acessar

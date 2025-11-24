@@ -209,3 +209,21 @@ def settings():
 def firmware():
     feeders = Feeder.query.all()
     return render_template('firmware.html', feeders=feeders)
+
+@dashboard_bp.route('/wiring')
+@login_required
+def wiring():
+    return render_template('wiring.html')
+
+@dashboard_bp.route('/update_theme', methods=['POST'])
+@login_required
+def update_theme():
+    data = request.get_json()
+    new_theme = data.get('theme')
+    
+    if new_theme in ['light', 'dark']:
+        current_user.theme = new_theme
+        db.session.commit()
+        return jsonify({'success': True})
+    
+    return jsonify({'success': False}), 400

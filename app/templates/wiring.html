@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Esquema de Ligação</h1>
+        <p class="text-slate-500 dark:text-slate-400">Diagrama de conexões para o sistema BioFeed (ESP32).</p>
+    </div>
+
+    <!-- Diagram Container -->
+    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-8 overflow-x-auto">
+        
+        <div class="min-w-[800px] flex justify-center items-center gap-12 relative py-10">
+            
+            <!-- Central Unit: ESP32 -->
+            <div class="relative z-10 w-64 bg-slate-800 text-white rounded-xl p-6 shadow-xl border-2 border-indigo-500 flex flex-col items-center">
+                <div class="w-12 h-12 bg-indigo-600 rounded-lg flex items-center justify-center mb-4 shadow-lg shadow-indigo-900/50">
+                    <i data-lucide="cpu" class="w-8 h-8 text-white"></i>
+                </div>
+                <h3 class="font-bold text-lg mb-1">ESP32 DevKit V1</h3>
+                <p class="text-xs text-slate-400 text-center mb-4">Microcontrolador Principal</p>
+                
+                <div class="w-full space-y-2 text-xs font-mono">
+                    <div class="flex justify-between px-2 py-1 bg-slate-700/50 rounded">
+                        <span class="text-indigo-300">GPIO 13</span>
+                        <span>Servo Motor</span>
+                    </div>
+                    <div class="flex justify-between px-2 py-1 bg-slate-700/50 rounded">
+                        <span class="text-emerald-300">GPIO 12</span>
+                        <span>Ultrassônico (Trig)</span>
+                    </div>
+                    <div class="flex justify-between px-2 py-1 bg-slate-700/50 rounded">
+                        <span class="text-emerald-300">GPIO 14</span>
+                        <span>Ultrassônico (Echo)</span>
+                    </div>
+                    <div class="flex justify-between px-2 py-1 bg-slate-700/50 rounded">
+                        <span class="text-blue-300">GPIO 26</span>
+                        <span>Relé (Solenoide)</span>
+                    </div>
+                    <div class="flex justify-between px-2 py-1 bg-slate-700/50 rounded">
+                        <span class="text-red-300">VIN / GND</span>
+                        <span>Fonte 5V</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Connections Lines (SVG Overlay) -->
+            <svg class="absolute inset-0 w-full h-full pointer-events-none z-0" style="stroke-width: 2px;">
+                <!-- Servo Line -->
+                <path d="M 400 150 L 600 80" stroke="#6366f1" fill="none" class="opacity-50" stroke-dasharray="5,5"/>
+                <!-- Ultrasonic Line -->
+                <path d="M 400 200 L 600 200" stroke="#10b981" fill="none" class="opacity-50" stroke-dasharray="5,5"/>
+                <!-- Relay Line -->
+                <path d="M 400 250 L 600 320" stroke="#3b82f6" fill="none" class="opacity-50" stroke-dasharray="5,5"/>
+            </svg>
+
+            <!-- Peripherals Column -->
+            <div class="flex flex-col gap-8 z-10">
+                
+                <!-- Servo -->
+                <div class="w-56 bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-4">
+                    <div class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                        <i data-lucide="rotate-cw" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-900 dark:text-white text-sm">Servo Motor</h4>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Controle da Porta</p>
+                        <span class="text-[10px] font-mono text-indigo-500">Pin 13 (PWM)</span>
+                    </div>
+                </div>
+
+                <!-- Ultrasonic -->
+                <div class="w-56 bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-4">
+                    <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                        <i data-lucide="activity" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-900 dark:text-white text-sm">Sensor HC-SR04</h4>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Nível de Ração</p>
+                        <span class="text-[10px] font-mono text-emerald-500">Trig 12 / Echo 14</span>
+                    </div>
+                </div>
+
+                <!-- Relay/Solenoid -->
+                <div class="w-56 bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-4">
+                    <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center text-blue-600 dark:text-blue-400">
+                        <i data-lucide="droplet" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-900 dark:text-white text-sm">Módulo Relé</h4>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Válvula Solenoide</p>
+                        <span class="text-[10px] font-mono text-blue-500">Pin 26 (Digital)</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Power Supply Note -->
+        <div class="mt-8 p-4 bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-900/30 rounded-lg flex items-start gap-3">
+            <i data-lucide="zap" class="w-5 h-5 text-amber-500 mt-0.5"></i>
+            <div>
+                <h4 class="font-bold text-amber-700 dark:text-amber-400 text-sm">Alimentação Externa Recomendada</h4>
+                <p class="text-xs text-amber-600 dark:text-amber-500 mt-1">
+                    Não alimente o Servo Motor e a Solenoide diretamente pelos pinos 5V do ESP32. Utilize uma fonte externa de 5V (min 2A) com o GND comum ao ESP32 para evitar instabilidade.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

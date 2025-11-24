@@ -50,6 +50,9 @@ def migrate():
 
         # Tanks Table Updates
         add_column("tanks", "block_name VARCHAR(64)")
+
+        # Users Table Updates
+        add_column("users", "theme VARCHAR(16) DEFAULT 'dark'")
         
         conn.commit()
         
