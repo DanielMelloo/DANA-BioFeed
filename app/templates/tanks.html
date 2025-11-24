@@ -3,8 +3,8 @@
 {% block content %}
 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
     <div>
-        <h1 class="text-2xl font-bold text-white">Gerenciar Tanques</h1>
-        <p class="text-slate-400">Monitore o nível de ração e água.</p>
+        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Gerenciar Tanques</h1>
+        <p class="text-slate-500 dark:text-slate-400">Monitore o nível de ração e água.</p>
     </div>
     <button onclick="document.getElementById('newTankModal').classList.remove('hidden')" class="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-500 font-medium shadow-sm transition-colors">
         <i data-lucide="plus" class="w-4 h-4"></i>
@@ -14,28 +14,28 @@
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     {% for tank in tanks %}
-    <div class="bg-slate-900 rounded-xl shadow-lg border border-slate-800 overflow-hidden relative">
+    <div class="bg-white dark:bg-slate-900 rounded-xl shadow-lg border border-slate-200 dark:border-slate-800 overflow-hidden relative">
         <!-- Level Visual Background -->
-        <div class="absolute bottom-0 left-0 right-0 bg-indigo-900/20 transition-all duration-1000" style="height: {{ tank.level }}%"></div>
+        <div class="absolute bottom-0 left-0 right-0 bg-indigo-50 dark:bg-indigo-900/20 transition-all duration-1000" style="height: {{ tank.level }}%"></div>
         
         <div class="p-6 relative z-10">
             <div class="flex justify-between items-start mb-4">
                 <div class="flex items-center gap-3">
-                    <div class="p-3 rounded-lg {{ 'bg-amber-900/30 text-amber-400' if tank.type == 'food' else 'bg-blue-900/30 text-blue-400' }}">
+                    <div class="p-3 rounded-lg {{ 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400' if tank.type == 'food' else 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' }}">
                         <i data-lucide="{{ 'cookie' if tank.type == 'food' else 'droplets' }}" class="w-6 h-6"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-lg text-white">{{ tank.name }}</h3>
-                        <p class="text-sm text-slate-400 capitalize">{{ 'Ração (Balança)' if tank.type == 'food' else 'Água (Sensor Nível)' }} • {{ tank.capacity }}</p>
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-white">{{ tank.name }}</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 capitalize">{{ 'Ração (Balança)' if tank.type == 'food' else 'Água (Sensor Nível)' }} • {{ tank.capacity }}</p>
                     </div>
                 </div>
                 <div class="flex flex-col items-end gap-2">
                     <div class="text-right">
-                        <span class="text-2xl font-bold {{ 'text-emerald-400' if tank.level > 50 else 'text-amber-400' if tank.level > 20 else 'text-red-400' }}">{{ tank.level }}%</span>
+                        <span class="text-2xl font-bold {{ 'text-emerald-500 dark:text-emerald-400' if tank.level > 50 else 'text-amber-500 dark:text-amber-400' if tank.level > 20 else 'text-red-500 dark:text-red-400' }}">{{ tank.level }}%</span>
                         <p class="text-xs text-slate-500">Nível Atual</p>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button onclick="document.getElementById('editTankModal-{{ tank.id }}').classList.remove('hidden')" class="text-slate-500 hover:text-indigo-400 transition-colors" title="Editar Definições">
+                        <button onclick="document.getElementById('editTankModal-{{ tank.id }}').classList.remove('hidden')" class="text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" title="Editar Definições">
                             <i data-lucide="edit-2" class="w-4 h-4"></i>
                         </button>
                     </div>
@@ -43,29 +43,29 @@
             </div>
 
             <!-- Token Display -->
-            <div class="mb-4 p-3 bg-slate-950 rounded-lg border border-slate-800 flex items-center justify-between group">
+            <div class="mb-4 p-3 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800 flex items-center justify-between group">
                 <div class="flex items-center gap-2 overflow-hidden">
-                    <i data-lucide="key" class="w-4 h-4 text-slate-500 flex-shrink-0"></i>
-                    <code class="text-xs text-slate-400 font-mono truncate">{{ tank.token }}</code>
+                    <i data-lucide="key" class="w-4 h-4 text-slate-400 dark:text-slate-500 flex-shrink-0"></i>
+                    <code class="text-xs text-slate-500 dark:text-slate-400 font-mono truncate">{{ tank.token }}</code>
                 </div>
                 <button onclick="copyToClipboard('{{ tank.token }}', this)" 
-                        class="text-slate-500 hover:text-white transition-colors p-1">
+                        class="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors p-1">
                     <i data-lucide="copy" class="w-4 h-4"></i>
                 </button>
             </div>
 
             <!-- Level Indicator Bar -->
-            <div class="w-full bg-slate-800 rounded-full h-4 mb-6 border border-slate-700">
+            <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-4 mb-6 border border-slate-300 dark:border-slate-700">
                 <div class="{{ 'bg-amber-500' if tank.type == 'food' else 'bg-blue-500' }} h-4 rounded-full transition-all duration-500" style="width: {{ tank.level }}%"></div>
             </div>
 
             <form action="{{ url_for('dashboard.update_tank', id=tank.id) }}" method="POST" class="flex gap-2 items-end">
                 <div class="flex-1">
                     <label class="text-xs text-slate-500 mb-1 block">Atualizar Nível (%)</label>
-                    <input type="range" name="level" min="0" max="100" value="{{ tank.level }}" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer" oninput="this.nextElementSibling.value = this.value + '%'">
-                    <output class="text-xs text-slate-400 text-right block mt-1">{{ tank.level }}%</output>
+                    <input type="range" name="level" min="0" max="100" value="{{ tank.level }}" class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer" oninput="this.nextElementSibling.value = this.value + '%'">
+                    <output class="text-xs text-slate-500 dark:text-slate-400 text-right block mt-1">{{ tank.level }}%</output>
                 </div>
-                <button type="submit" class="px-4 py-2 bg-slate-800 border border-slate-700 text-white rounded-lg hover:bg-slate-700 transition-colors text-sm">
+                <button type="submit" class="px-4 py-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-white rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-sm">
                     Salvar
                 </button>
             </form>
@@ -74,26 +74,26 @@
 
     <!-- Edit Tank Modal -->
     <div id="editTankModal-{{ tank.id }}" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 rounded-xl border border-slate-800 w-full max-w-md p-6">
-            <h3 class="text-xl font-bold text-white mb-4">Editar Tanque</h3>
+        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 w-full max-w-md p-6">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4">Editar Tanque</h3>
             <form action="{{ url_for('dashboard.update_tank', id=tank.id) }}" method="POST">
                 <div class="mb-4">
-                    <label class="block text-sm text-slate-400 mb-1">Nome</label>
-                    <input type="text" name="name" value="{{ tank.name }}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white" required>
+                    <label class="block text-sm text-slate-500 dark:text-slate-400 mb-1">Nome</label>
+                    <input type="text" name="name" value="{{ tank.name }}" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-2 text-slate-900 dark:text-white" required>
                 </div>
                 <div class="mb-4">
-                    <label class="block text-sm text-slate-400 mb-1">Tipo</label>
-                    <select name="type" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                    <label class="block text-sm text-slate-500 dark:text-slate-400 mb-1">Tipo</label>
+                    <select name="type" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-2 text-slate-900 dark:text-white">
                         <option value="food" {{ 'selected' if tank.type == 'food' }}>Ração (Balança)</option>
                         <option value="water" {{ 'selected' if tank.type == 'water' }}>Água (Sensor Nível)</option>
                     </select>
                 </div>
                 <div class="mb-6">
-                    <label class="block text-sm text-slate-400 mb-1">Capacidade Total</label>
-                    <input type="text" name="capacity" value="{{ tank.capacity }}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white" required>
+                    <label class="block text-sm text-slate-500 dark:text-slate-400 mb-1">Capacidade Total</label>
+                    <input type="text" name="capacity" value="{{ tank.capacity }}" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-2 text-slate-900 dark:text-white" required>
                 </div>
                 <div class="flex justify-end gap-3">
-                    <button type="button" onclick="document.getElementById('editTankModal-{{ tank.id }}').classList.add('hidden')" class="px-4 py-2 text-slate-400 hover:text-white">Cancelar</button>
+                    <button type="button" onclick="document.getElementById('editTankModal-{{ tank.id }}').classList.add('hidden')" class="px-4 py-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">Cancelar</button>
                     <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-500">Salvar</button>
                 </div>
             </form>
@@ -104,26 +104,26 @@
 
 <!-- New Tank Modal -->
 <div id="newTankModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-slate-900 rounded-xl border border-slate-800 w-full max-w-md p-6">
-        <h3 class="text-xl font-bold text-white mb-4">Novo Tanque</h3>
+    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 w-full max-w-md p-6">
+        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4">Novo Tanque</h3>
         <form action="{{ url_for('dashboard.create_tank') }}" method="POST">
             <div class="mb-4">
-                <label class="block text-sm text-slate-400 mb-1">Nome</label>
-                <input type="text" name="name" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white" required>
+                <label class="block text-sm text-slate-500 dark:text-slate-400 mb-1">Nome</label>
+                <input type="text" name="name" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-2 text-slate-900 dark:text-white" required>
             </div>
             <div class="mb-4">
-                <label class="block text-sm text-slate-400 mb-1">Tipo</label>
-                <select name="type" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                <label class="block text-sm text-slate-500 dark:text-slate-400 mb-1">Tipo</label>
+                <select name="type" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-2 text-slate-900 dark:text-white">
                     <option value="food">Ração (Balança)</option>
                     <option value="water">Água (Sensor Nível)</option>
                 </select>
             </div>
             <div class="mb-6">
-                <label class="block text-sm text-slate-400 mb-1">Capacidade Total</label>
-                <input type="text" name="capacity" placeholder="Ex: 5kg ou 3L" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white" required>
+                <label class="block text-sm text-slate-500 dark:text-slate-400 mb-1">Capacidade Total</label>
+                <input type="text" name="capacity" placeholder="Ex: 5kg ou 3L" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-2 text-slate-900 dark:text-white" required>
             </div>
             <div class="flex justify-end gap-3">
-                <button type="button" onclick="document.getElementById('newTankModal').classList.add('hidden')" class="px-4 py-2 text-slate-400 hover:text-white">Cancelar</button>
+                <button type="button" onclick="document.getElementById('newTankModal').classList.add('hidden')" class="px-4 py-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">Cancelar</button>
                 <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-500">Criar</button>
             </div>
         </form>

@@ -2,13 +2,13 @@
 
 {% block content %}
 <div class="max-w-2xl mx-auto mt-10">
-    <div class="bg-slate-900 rounded-xl shadow-lg border border-slate-800 overflow-hidden">
-        <div class="bg-slate-950 p-6 text-center border-b border-slate-800">
+    <div class="bg-white dark:bg-slate-900 rounded-xl shadow-lg border border-slate-200 dark:border-slate-800 overflow-hidden">
+        <div class="bg-slate-50 dark:bg-slate-950 p-6 text-center border-b border-slate-200 dark:border-slate-800">
             <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-indigo-600 mb-3 shadow-lg shadow-indigo-900/50">
                 <i data-lucide="cpu" class="w-6 h-6 text-white"></i>
             </div>
-            <h2 class="text-xl font-bold text-white">Conectar Novo Feeder</h2>
-            <p class="text-slate-400 text-sm mt-1">Registre seu dispositivo ESP32 para gerar as credenciais.</p>
+            <h2 class="text-xl font-bold text-slate-900 dark:text-white">Conectar Novo Feeder</h2>
+            <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Registre seu dispositivo ESP32 para gerar as credenciais.</p>
         </div>
 
         <div class="p-8">
@@ -16,18 +16,18 @@
             <!-- Step 1: Form -->
             <form action="{{ url_for('dashboard.register_feeder_action') }}" method="POST">
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-slate-300 mb-2">Nome do Dispositivo</label>
-                    <input type="text" name="name" placeholder="Ex: Feeder da Sala" class="w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-indigo-500 outline-none transition-colors" required>
+                    <label class="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">Nome do Dispositivo</label>
+                    <input type="text" name="name" placeholder="Ex: Feeder da Sala" class="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-indigo-500 outline-none transition-colors" required>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4 mb-6">
                     <div>
-                        <label class="block text-sm font-medium text-slate-300 mb-2">Avatar</label>
+                        <label class="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">Avatar</label>
                         <div class="flex gap-3">
                             {% for av in ['squirrel', 'mouse', 'twister'] %}
                             <label class="cursor-pointer">
                                 <input type="radio" name="avatar" value="{{ av }}" class="peer sr-only" {{ 'checked' if av == 'squirrel' }}>
-                                <div class="w-12 h-12 rounded-full bg-slate-800 border-2 border-slate-700 peer-checked:border-indigo-500 peer-checked:bg-indigo-500/20 flex items-center justify-center transition-all hover:bg-slate-700 hover:scale-105">
+                                <div class="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 peer-checked:border-indigo-500 peer-checked:bg-indigo-500/20 flex items-center justify-center transition-all hover:bg-slate-200 dark:hover:bg-slate-700 hover:scale-105">
                                     {% if av == 'squirrel' %} <img src="https://cdn-icons-png.flaticon.com/512/2316/2316669.png" class="w-8 h-8" title="Esquilo">
                                     {% elif av == 'mouse' %} <img src="https://cdn-icons-png.flaticon.com/512/7002/7002275.png" class="w-8 h-8" title="Rato (Camundongo)">
                                     {% elif av == 'twister' %} <img src="https://cdn-icons-png.flaticon.com/512/5228/5228693.png" class="w-8 h-8" title="Rato (Twister)">
@@ -40,8 +40,8 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-slate-300 mb-2">Tanque de Ração</label>
-                            <select name="food_tank_id" class="w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-indigo-500 outline-none">
+                            <label class="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">Tanque de Ração</label>
+                            <select name="food_tank_id" class="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-indigo-500 outline-none">
                                 <option value="">Nenhum</option>
                                 {% for tank in tanks if tank.type == 'food' %}
                                 <option value="{{ tank.id }}">{{ tank.name }}</option>
@@ -49,8 +49,8 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-300 mb-2">Tanque de Água</label>
-                            <select name="water_tank_id" class="w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-indigo-500 outline-none">
+                            <label class="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">Tanque de Água</label>
+                            <select name="water_tank_id" class="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-indigo-500 outline-none">
                                 <option value="">Nenhum</option>
                                 {% for tank in tanks if tank.type == 'water' %}
                                 <option value="{{ tank.id }}">{{ tank.name }}</option>
@@ -60,9 +60,9 @@
                     </div>
                 </div>
 
-                <div class="bg-amber-900/20 border border-amber-900/50 rounded-lg p-4 mb-6 flex gap-3">
+                <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-900/50 rounded-lg p-4 mb-6 flex gap-3">
                     <i data-lucide="alert-triangle" class="w-5 h-5 text-amber-500 flex-shrink-0"></i>
-                    <p class="text-sm text-amber-200">Certifique-se de que seu ESP32 esteja ligado e pronto para conectar na mesma rede.</p>
+                    <p class="text-sm text-amber-700 dark:text-amber-200">Certifique-se de que seu ESP32 esteja ligado e pronto para conectar na mesma rede.</p>
                 </div>
 
                 <button type="submit" class="w-full py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-500 font-medium shadow-lg shadow-indigo-900/30 transition-all flex justify-center items-center gap-2">
@@ -73,26 +73,26 @@
             {% else %}
             <!-- Step 2: Success -->
             <div class="text-center">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-900/30 border border-emerald-800 text-emerald-400 mb-4">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 mb-4">
                     <i data-lucide="check" class="w-8 h-8"></i>
                 </div>
-                <h3 class="text-xl font-bold text-white mb-2">Dispositivo Registrado!</h3>
-                <p class="text-slate-400 mb-6">Use o token abaixo no firmware do seu ESP32.</p>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Dispositivo Registrado!</h3>
+                <p class="text-slate-500 dark:text-slate-400 mb-6">Use o token abaixo no firmware do seu ESP32.</p>
 
-                <div class="bg-black/50 rounded-xl p-4 mb-6 text-left relative group border border-slate-800">
+                <div class="bg-slate-100 dark:bg-black/50 rounded-xl p-4 mb-6 text-left relative group border border-slate-200 dark:border-slate-800">
                     <label class="text-xs text-slate-500 uppercase tracking-wider font-bold mb-1 block">Token de Acesso</label>
-                    <code class="text-emerald-400 font-mono text-lg break-all">{{ new_feeder.token }}</code>
-                    <button onclick="copyToClipboard('{{ new_feeder.token }}', this)" class="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors">
+                    <code class="text-emerald-600 dark:text-emerald-400 font-mono text-lg break-all">{{ new_feeder.token }}</code>
+                    <button onclick="copyToClipboard('{{ new_feeder.token }}', this)" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 dark:text-slate-500 dark:hover:text-white transition-colors">
                         <i data-lucide="copy" class="w-5 h-5"></i>
                     </button>
                 </div>
 
-                <div class="bg-slate-800 rounded-lg p-4 mb-6 text-left text-sm text-slate-300 border border-slate-700">
+                <div class="bg-slate-50 dark:bg-slate-800 rounded-lg p-4 mb-6 text-left text-sm text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                     <p class="mb-2"><strong>ID:</strong> {{ new_feeder.id }}</p>
                     <p><strong>Nome:</strong> {{ new_feeder.name }}</p>
                 </div>
 
-                <a href="{{ url_for('dashboard.index') }}" class="block w-full py-3 bg-slate-700 text-slate-200 rounded-lg hover:bg-slate-600 font-medium transition-colors">
+                <a href="{{ url_for('dashboard.index') }}" class="block w-full py-3 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 font-medium transition-colors">
                     Ir para o Painel
                 </a>
             </div>

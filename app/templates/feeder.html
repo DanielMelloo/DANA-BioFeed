@@ -5,25 +5,25 @@
     <!-- Header -->
     <div class="flex items-center justify-between mb-8">
         <div class="flex items-center gap-4">
-            <a href="{{ url_for('dashboard.index') }}" class="p-2 rounded-lg bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors">
+            <a href="{{ url_for('dashboard.index') }}" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
                 <i data-lucide="arrow-left" class="w-5 h-5"></i>
             </a>
             <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center overflow-hidden">
+                <div class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center overflow-hidden">
                     {% if feeder.avatar == 'squirrel' %} <img src="https://cdn-icons-png.flaticon.com/512/2316/2316669.png" class="w-8 h-8">
                     {% elif feeder.avatar == 'mouse' %} <img src="https://cdn-icons-png.flaticon.com/512/7002/7002275.png" class="w-8 h-8">
                     {% elif feeder.avatar == 'twister' %} <img src="https://cdn-icons-png.flaticon.com/512/5228/5228693.png" class="w-8 h-8">
-                    {% else %} <i data-lucide="box" class="w-6 h-6 text-slate-500"></i>
+                    {% else %} <i data-lucide="box" class="w-6 h-6 text-slate-400 dark:text-slate-500"></i>
                     {% endif %}
                 </div>
                 <div>
-                    <h1 class="text-2xl font-bold text-white">{{ feeder.name }}</h1>
-                    <p class="text-sm text-slate-400">Configuração do Habitat</p>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">{{ feeder.name }}</h1>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Configuração do Habitat</p>
                 </div>
             </div>
         </div>
         <div class="flex gap-2">
-            <div class="px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-xs font-medium text-slate-300 flex items-center gap-2">
+            <div class="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-600 dark:text-slate-300 flex items-center gap-2">
                 <span class="w-2 h-2 rounded-full {{ 'bg-emerald-500' if feeder.online else 'bg-red-500' }}"></span>
                 {{ 'Online' if feeder.online else 'Offline' }}
             </div>
@@ -36,23 +36,23 @@
             <form action="{{ url_for('dashboard.update_feeder', id=feeder.id) }}" method="POST">
                 
                 <!-- General Settings -->
-                <div class="bg-slate-900 rounded-xl border border-slate-800 p-6 mb-6">
-                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                        <i data-lucide="settings" class="w-5 h-5 text-indigo-400"></i>
+                <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-6">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                        <i data-lucide="settings" class="w-5 h-5 text-indigo-600 dark:text-indigo-400"></i>
                         Geral
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-sm font-medium text-slate-400 mb-1">Nome do Dispositivo</label>
-                            <input type="text" name="name" value="{{ feeder.name }}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-indigo-500 outline-none">
+                            <label class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Nome do Dispositivo</label>
+                            <input type="text" name="name" value="{{ feeder.name }}" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-2 text-slate-900 dark:text-white focus:border-indigo-500 outline-none">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-400 mb-2">Avatar</label>
+                            <label class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">Avatar</label>
                             <div class="flex gap-3">
                                 {% for av in ['squirrel', 'mouse', 'twister'] %}
                                 <label class="cursor-pointer">
                                     <input type="radio" name="avatar" value="{{ av }}" class="peer sr-only" {{ 'checked' if feeder.avatar == av }}>
-                                    <div class="w-12 h-12 rounded-full bg-slate-800 border-2 border-slate-700 peer-checked:border-indigo-500 peer-checked:bg-indigo-500/20 flex items-center justify-center transition-all hover:bg-slate-700 hover:scale-105">
+                                    <div class="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 peer-checked:border-indigo-500 peer-checked:bg-indigo-500/20 flex items-center justify-center transition-all hover:bg-slate-100 dark:hover:bg-slate-700 hover:scale-105">
                                         {% if av == 'squirrel' %} <img src="https://cdn-icons-png.flaticon.com/512/2316/2316669.png" class="w-8 h-8" title="Esquilo">
                                         {% elif av == 'mouse' %} <img src="https://cdn-icons-png.flaticon.com/512/7002/7002275.png" class="w-8 h-8" title="Rato (Camundongo)">
                                         {% elif av == 'twister' %} <img src="https://cdn-icons-png.flaticon.com/512/5228/5228693.png" class="w-8 h-8" title="Rato (Twister)">
@@ -66,15 +66,15 @@
                 </div>
 
                 <!-- Connections (Tanks) -->
-                <div class="bg-slate-900 rounded-xl border border-slate-800 p-6 mb-6">
-                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                        <i data-lucide="link" class="w-5 h-5 text-blue-400"></i>
+                <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-6">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                        <i data-lucide="link" class="w-5 h-5 text-blue-600 dark:text-blue-400"></i>
                         Conexões
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-sm font-medium text-slate-400 mb-1">Tanque de Ração (Principal)</label>
-                            <select name="food_tank_id" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-indigo-500 outline-none">
+                            <label class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Tanque de Ração (Principal)</label>
+                            <select name="food_tank_id" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-2 text-slate-900 dark:text-white focus:border-indigo-500 outline-none">
                                 <option value="">-- Sem conexão --</option>
                                 {% for tank in tanks if tank.type == 'food' %}
                                 <option value="{{ tank.id }}" {{ 'selected' if feeder.food_tank_id == tank.id }}>{{ tank.name }} ({{ tank.level }}%)</option>
@@ -82,8 +82,8 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-400 mb-1">Tanque de Água (Principal)</label>
-                            <select name="water_tank_id" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-indigo-500 outline-none">
+                            <label class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Tanque de Água (Principal)</label>
+                            <select name="water_tank_id" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-2 text-slate-900 dark:text-white focus:border-indigo-500 outline-none">
                                 <option value="">-- Sem conexão --</option>
                                 {% for tank in tanks if tank.type == 'water' %}
                                 <option value="{{ tank.id }}" {{ 'selected' if feeder.water_tank_id == tank.id }}>{{ tank.name }} ({{ tank.level }}%)</option>
@@ -94,32 +94,32 @@
                 </div>
 
                 <!-- Block & Water Settings -->
-                <div class="bg-slate-900 rounded-xl border border-slate-800 p-6 mb-6">
-                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                        <i data-lucide="grid" class="w-5 h-5 text-purple-400"></i>
+                <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-6">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                        <i data-lucide="grid" class="w-5 h-5 text-purple-600 dark:text-purple-400"></i>
                         Bloco e Água
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Block Name -->
                         <div>
-                            <label class="block text-sm font-medium text-slate-400 mb-1">Nome do Bloco</label>
-                            <input type="text" name="block_name" value="{{ feeder.block_name or '' }}" placeholder="Ex: Bloco A" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-indigo-500 outline-none">
+                            <label class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Nome do Bloco</label>
+                            <input type="text" name="block_name" value="{{ feeder.block_name or '' }}" placeholder="Ex: Bloco A" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-2 text-slate-900 dark:text-white focus:border-indigo-500 outline-none">
                             <p class="text-xs text-slate-500 mt-1">Agrupa gavetas e dutos para intertravamento.</p>
                         </div>
 
                         <!-- Water Mode -->
                         <div>
-                            <label class="block text-sm font-medium text-slate-400 mb-2">Modo da Água</label>
-                            <div class="flex p-1 bg-slate-800 rounded-lg">
+                            <label class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">Modo da Água</label>
+                            <div class="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-lg">
                                 <label class="flex-1 cursor-pointer">
                                     <input type="radio" name="water_mode" value="AUTO" class="peer sr-only" {{ 'checked' if feeder.water_mode == 'AUTO' }}>
-                                    <div class="text-center py-2 rounded-md text-sm font-medium text-slate-400 peer-checked:bg-blue-600 peer-checked:text-white transition-all">
+                                    <div class="text-center py-2 rounded-md text-sm font-medium text-slate-500 dark:text-slate-400 peer-checked:bg-blue-600 peer-checked:text-white transition-all">
                                         Automático
                                     </div>
                                 </label>
                                 <label class="flex-1 cursor-pointer">
                                     <input type="radio" name="water_mode" value="MANUAL" class="peer sr-only" {{ 'checked' if feeder.water_mode == 'MANUAL' }}>
-                                    <div class="text-center py-2 rounded-md text-sm font-medium text-slate-400 peer-checked:bg-amber-600 peer-checked:text-white transition-all">
+                                    <div class="text-center py-2 rounded-md text-sm font-medium text-slate-500 dark:text-slate-400 peer-checked:bg-amber-600 peer-checked:text-white transition-all">
                                         Manual
                                     </div>
                                 </label>
@@ -128,76 +128,76 @@
                     </div>
 
                     <!-- Manual Water Control -->
-                    <div class="mt-6 pt-6 border-t border-slate-800">
-                        <label class="block text-sm font-medium text-slate-400 mb-2">Controle Manual da Solenoide</label>
+                    <div class="mt-6 pt-6 border-t border-slate-200 dark:border-slate-800">
+                        <label class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">Controle Manual da Solenoide</label>
                         <div class="flex gap-4">
-                            <button type="submit" name="manual_water" value="OPEN" class="flex-1 py-2 bg-emerald-900/30 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-900/50 rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
+                            <button type="submit" name="manual_water" value="OPEN" class="flex-1 py-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30 hover:bg-emerald-200 dark:hover:bg-emerald-900/50 rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
                                 <i data-lucide="droplet" class="w-4 h-4"></i> Abrir (Encher)
                             </button>
-                            <button type="submit" name="manual_water" value="CLOSE" class="flex-1 py-2 bg-red-900/30 text-red-400 border border-red-500/30 hover:bg-red-900/50 rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
+                            <button type="submit" name="manual_water" value="CLOSE" class="flex-1 py-2 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-500/30 hover:bg-red-200 dark:hover:bg-red-900/50 rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
                                 <i data-lucide="x-circle" class="w-4 h-4"></i> Fechar (Parar)
                             </button>
                         </div>
                         <p class="text-xs text-slate-500 mt-2 text-center">
-                            Estado Atual: <span class="font-mono text-white">{{ feeder.water_valve_state }}</span>
+                            Estado Atual: <span class="font-mono text-slate-900 dark:text-white">{{ feeder.water_valve_state }}</span>
                         </p>
                     </div>
                 </div>
 
                 <!-- Safety Shield -->
-                <div class="bg-slate-900 rounded-xl border border-slate-800 p-6 mb-6 relative overflow-hidden">
+                <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-6 relative overflow-hidden">
                     <div class="absolute top-0 right-0 p-4 opacity-10">
-                        <i data-lucide="shield" class="w-24 h-24 text-white"></i>
+                        <i data-lucide="shield" class="w-24 h-24 text-slate-900 dark:text-white"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                        <i data-lucide="shield-check" class="w-5 h-5 text-emerald-400"></i>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                        <i data-lucide="shield-check" class="w-5 h-5 text-emerald-600 dark:text-emerald-400"></i>
                         Bloqueio de Fluxo (Safety)
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
                         <!-- Food Lock -->
-                        <div class="bg-slate-800/50 rounded-lg p-4 border {{ 'border-red-500/50 bg-red-900/10' if feeder.is_locked else 'border-slate-700' }}">
+                        <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4 border {{ 'border-red-500/50 bg-red-50 dark:bg-red-900/10' if feeder.is_locked else 'border-slate-200 dark:border-slate-700' }}">
                             <div class="flex justify-between items-center mb-2">
-                                <span class="font-medium text-white flex items-center gap-2">
+                                <span class="font-medium text-slate-900 dark:text-white flex items-center gap-2">
                                     <i data-lucide="cookie" class="w-4 h-4"></i> Ração
                                 </span>
                                 <label class="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" name="is_locked" class="sr-only peer" {{ 'checked' if feeder.is_locked }}>
-                                    <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
+                                    <div class="w-11 h-6 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
                                 </label>
                             </div>
-                            <p class="text-xs {{ 'text-red-300' if feeder.is_locked else 'text-slate-500' }}">
+                            <p class="text-xs {{ 'text-red-500 dark:text-red-300' if feeder.is_locked else 'text-slate-500' }}">
                                 {{ 'TRAVADO: Motor desativado.' if feeder.is_locked else 'LIBERADO: Funcionamento normal.' }}
                             </p>
                         </div>
 
                         <!-- Water Lock -->
-                        <div class="bg-slate-800/50 rounded-lg p-4 border {{ 'border-red-500/50 bg-red-900/10' if feeder.water_locked else 'border-slate-700' }}">
+                        <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4 border {{ 'border-red-500/50 bg-red-50 dark:bg-red-900/10' if feeder.water_locked else 'border-slate-200 dark:border-slate-700' }}">
                             <div class="flex justify-between items-center mb-2">
-                                <span class="font-medium text-white flex items-center gap-2">
+                                <span class="font-medium text-slate-900 dark:text-white flex items-center gap-2">
                                     <i data-lucide="droplets" class="w-4 h-4"></i> Água
                                 </span>
                                 <label class="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" name="water_locked" class="sr-only peer" {{ 'checked' if feeder.water_locked }}>
-                                    <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
+                                    <div class="w-11 h-6 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
                                 </label>
                             </div>
-                            <p class="text-xs {{ 'text-red-300' if feeder.water_locked else 'text-slate-500' }}">
+                            <p class="text-xs {{ 'text-red-500 dark:text-red-300' if feeder.water_locked else 'text-slate-500' }}">
                                 {{ 'TRAVADO: Solenoide desativada.' if feeder.water_locked else 'LIBERADO: Reabastecimento auto.' }}
                             </p>
                         </div>
 
                         <!-- Maintenance Mode -->
-                        <div class="col-span-1 md:col-span-2 bg-amber-900/10 rounded-lg p-4 border {{ 'border-amber-500/50' if feeder.maintenance_mode else 'border-slate-700' }}">
+                        <div class="col-span-1 md:col-span-2 bg-amber-50 dark:bg-amber-900/10 rounded-lg p-4 border {{ 'border-amber-500/50' if feeder.maintenance_mode else 'border-slate-200 dark:border-slate-700' }}">
                             <div class="flex justify-between items-center mb-2">
-                                <span class="font-medium text-white flex items-center gap-2">
-                                    <i data-lucide="wrench" class="w-4 h-4 text-amber-400"></i> Modo Manutenção
+                                <span class="font-medium text-slate-900 dark:text-white flex items-center gap-2">
+                                    <i data-lucide="wrench" class="w-4 h-4 text-amber-500 dark:text-amber-400"></i> Modo Manutenção
                                 </span>
                                 <label class="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" name="maintenance_mode" class="sr-only peer" {{ 'checked' if feeder.maintenance_mode }}>
-                                    <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                                    <div class="w-11 h-6 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
                                 </label>
                             </div>
-                            <p class="text-xs {{ 'text-amber-300' if feeder.maintenance_mode else 'text-slate-500' }}">
+                            <p class="text-xs {{ 'text-amber-600 dark:text-amber-300' if feeder.maintenance_mode else 'text-slate-500' }}">
                                 {{ 'ATIVO: Alarmes e ações automáticas suspensos.' if feeder.maintenance_mode else 'INATIVO: Operação normal.' }}
                             </p>
                         </div>
@@ -205,23 +205,23 @@
                 </div>
 
                 <!-- Feeding Logic -->
-                <div class="bg-slate-900 rounded-xl border border-slate-800 p-6 mb-6">
-                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                        <i data-lucide="zap" class="w-5 h-5 text-amber-400"></i>
+                <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-6">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                        <i data-lucide="zap" class="w-5 h-5 text-amber-500 dark:text-amber-400"></i>
                         Lógica de Alimentação
                     </h3>
                     
                     <!-- Mode Selection -->
-                    <div class="flex p-1 bg-slate-800 rounded-lg mb-6">
+                    <div class="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-lg mb-6">
                         <label class="flex-1 cursor-pointer">
                             <input type="radio" name="mode" value="interval" class="peer sr-only" {{ 'checked' if feeder.mode == 'interval' }}>
-                            <div class="text-center py-2 rounded-md text-sm font-medium text-slate-400 peer-checked:bg-indigo-600 peer-checked:text-white transition-all">
+                            <div class="text-center py-2 rounded-md text-sm font-medium text-slate-500 dark:text-slate-400 peer-checked:bg-indigo-600 peer-checked:text-white transition-all">
                                 Intervalo (Timer)
                             </div>
                         </label>
                         <label class="flex-1 cursor-pointer">
                             <input type="radio" name="mode" value="schedule" class="peer sr-only" {{ 'checked' if feeder.mode == 'schedule' }}>
-                            <div class="text-center py-2 rounded-md text-sm font-medium text-slate-400 peer-checked:bg-indigo-600 peer-checked:text-white transition-all">
+                            <div class="text-center py-2 rounded-md text-sm font-medium text-slate-500 dark:text-slate-400 peer-checked:bg-indigo-600 peer-checked:text-white transition-all">
                                 Horário Fixo
                             </div>
                         </label>
@@ -229,22 +229,22 @@
 
                     <!-- Interval Config (Detailed) -->
                     <div id="interval-config" class="{{ 'hidden' if feeder.mode == 'schedule' }}">
-                        <label class="block text-sm font-medium text-slate-400 mb-2">Repetir a cada:</label>
+                        <label class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">Repetir a cada:</label>
                         <div class="grid grid-cols-4 gap-2">
                             <div>
-                                <input type="number" name="interval_days" placeholder="0" class="w-full bg-slate-800 border border-slate-700 rounded px-3 py-2 text-white text-center" min="0">
+                                <input type="number" name="interval_days" placeholder="0" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-slate-900 dark:text-white text-center" min="0">
                                 <span class="text-xs text-slate-500 block text-center mt-1">Dias</span>
                             </div>
                             <div>
-                                <input type="number" name="interval_hours" placeholder="0" class="w-full bg-slate-800 border border-slate-700 rounded px-3 py-2 text-white text-center" min="0" max="23">
+                                <input type="number" name="interval_hours" placeholder="0" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-slate-900 dark:text-white text-center" min="0" max="23">
                                 <span class="text-xs text-slate-500 block text-center mt-1">Horas</span>
                             </div>
                             <div>
-                                <input type="number" name="interval_minutes" placeholder="0" class="w-full bg-slate-800 border border-slate-700 rounded px-3 py-2 text-white text-center" min="0" max="59">
+                                <input type="number" name="interval_minutes" placeholder="0" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-slate-900 dark:text-white text-center" min="0" max="59">
                                 <span class="text-xs text-slate-500 block text-center mt-1">Min</span>
                             </div>
                             <div>
-                                <input type="number" name="interval_seconds" placeholder="0" class="w-full bg-slate-800 border border-slate-700 rounded px-3 py-2 text-white text-center" min="0" max="59">
+                                <input type="number" name="interval_seconds" placeholder="0" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-slate-900 dark:text-white text-center" min="0" max="59">
                                 <span class="text-xs text-slate-500 block text-center mt-1">Seg</span>
                             </div>
                         </div>
@@ -253,39 +253,39 @@
 
                     <!-- Schedule Config -->
                     <div id="schedule-config" class="{{ 'hidden' if feeder.mode == 'interval' }}">
-                        <label class="block text-sm font-medium text-slate-400 mb-2">Horários Definidos:</label>
+                        <label class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">Horários Definidos:</label>
                         <div class="flex flex-wrap gap-2 mb-3">
                             <!-- Tags would go here via JS -->
-                            <div class="px-3 py-1 bg-indigo-900/30 border border-indigo-500/30 rounded-full text-indigo-300 text-sm flex items-center gap-2">
-                                08:00 <button type="button" class="hover:text-white"><i data-lucide="x" class="w-3 h-3"></i></button>
+                            <div class="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-500/30 rounded-full text-indigo-600 dark:text-indigo-300 text-sm flex items-center gap-2">
+                                08:00 <button type="button" class="hover:text-indigo-900 dark:hover:text-white"><i data-lucide="x" class="w-3 h-3"></i></button>
                             </div>
                         </div>
                         <div class="flex gap-2">
-                            <input type="time" class="bg-slate-800 border border-slate-700 rounded px-3 py-2 text-white">
-                            <button type="button" class="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded text-white"><i data-lucide="plus" class="w-4 h-4"></i></button>
+                            <input type="time" class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-slate-900 dark:text-white">
+                            <button type="button" class="px-3 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 rounded text-slate-700 dark:text-white"><i data-lucide="plus" class="w-4 h-4"></i></button>
                         </div>
                     </div>
 
                     <!-- Dosage Config -->
-                    <div class="grid grid-cols-2 gap-6 mt-6 pt-6 border-t border-slate-800">
+                    <div class="grid grid-cols-2 gap-6 mt-6 pt-6 border-t border-slate-200 dark:border-slate-800">
                         <div>
-                            <label class="block text-sm font-medium text-slate-400 mb-1">Peso da Unidade (g)</label>
-                            <input type="number" name="target_weight" value="{{ feeder.target_weight }}" class="w-full bg-slate-800 border border-slate-700 rounded px-3 py-2 text-white">
+                            <label class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Peso da Unidade (g)</label>
+                            <input type="number" name="target_weight" value="{{ feeder.target_weight }}" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-slate-900 dark:text-white">
                             <p class="text-xs text-slate-500 mt-1">Padrão: 210g (Cheio)</p>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-400 mb-1">Doses por Ciclo</label>
-                            <input type="number" name="dose_count" value="{{ feeder.dose_count }}" class="w-full bg-slate-800 border border-slate-700 rounded px-3 py-2 text-white">
+                            <label class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Doses por Ciclo</label>
+                            <input type="number" name="dose_count" value="{{ feeder.dose_count }}" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-slate-900 dark:text-white">
                             <p class="text-xs text-slate-500 mt-1">Ex: 2 doses = 420g</p>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-amber-400 mb-1">Nível de Alerta (g)</label>
-                            <input type="number" name="warning_weight" value="{{ feeder.warning_weight }}" class="w-full bg-slate-800 border border-slate-700 rounded px-3 py-2 text-white">
+                            <label class="block text-sm font-medium text-amber-500 dark:text-amber-400 mb-1">Nível de Alerta (g)</label>
+                            <input type="number" name="warning_weight" value="{{ feeder.warning_weight }}" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-slate-900 dark:text-white">
                             <p class="text-xs text-slate-500 mt-1">Define estado BAIXO (LSL)</p>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-red-400 mb-1">Nível Crítico (g)</label>
-                            <input type="number" name="critical_weight" value="{{ feeder.critical_weight }}" class="w-full bg-slate-800 border border-slate-700 rounded px-3 py-2 text-white">
+                            <label class="block text-sm font-medium text-red-500 dark:text-red-400 mb-1">Nível Crítico (g)</label>
+                            <input type="number" name="critical_weight" value="{{ feeder.critical_weight }}" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-slate-900 dark:text-white">
                             <p class="text-xs text-slate-500 mt-1">Define estado CRÍTICO (LSLL)</p>
                         </div>
                     </div>
@@ -300,22 +300,22 @@
         <!-- Info Column -->
         <div class="space-y-6">
             <!-- Technical Info -->
-            <div class="bg-slate-900 rounded-xl border border-slate-800 p-6">
-                <h3 class="text-lg font-bold text-white mb-4">Informações Técnicas</h3>
+            <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Informações Técnicas</h3>
                 <div class="space-y-3 text-sm">
-                    <div class="flex justify-between py-2 border-b border-slate-800">
-                        <span class="text-slate-400">ID do Dispositivo</span>
-                        <span class="text-white font-mono">#{{ feeder.id }}</span>
+                    <div class="flex justify-between py-2 border-b border-slate-200 dark:border-slate-800">
+                        <span class="text-slate-500 dark:text-slate-400">ID do Dispositivo</span>
+                        <span class="text-slate-900 dark:text-white font-mono">#{{ feeder.id }}</span>
                     </div>
-                    <div class="flex justify-between py-2 border-b border-slate-800">
-                        <span class="text-slate-400">Firmware</span>
-                        <span class="text-white">{{ feeder.firmware_version or 'v1.0.0' }}</span>
+                    <div class="flex justify-between py-2 border-b border-slate-200 dark:border-slate-800">
+                        <span class="text-slate-500 dark:text-slate-400">Firmware</span>
+                        <span class="text-slate-900 dark:text-white">{{ feeder.firmware_version or 'v1.0.0' }}</span>
                     </div>
                     <div class="py-2">
-                        <span class="text-slate-400 block mb-1">Token de Acesso</span>
-                        <div class="bg-slate-950 p-2 rounded border border-slate-800 flex items-center justify-between group">
-                            <code class="font-mono text-xs text-emerald-400 break-all">{{ feeder.token }}</code>
-                            <button type="button" onclick="copyToClipboard('{{ feeder.token }}', this)" class="p-1 text-slate-500 hover:text-white transition-colors" title="Copiar Token">
+                        <span class="text-slate-500 dark:text-slate-400 block mb-1">Token de Acesso</span>
+                        <div class="bg-slate-50 dark:bg-slate-950 p-2 rounded border border-slate-200 dark:border-slate-800 flex items-center justify-between group">
+                            <code class="font-mono text-xs text-emerald-600 dark:text-emerald-400 break-all">{{ feeder.token }}</code>
+                            <button type="button" onclick="copyToClipboard('{{ feeder.token }}', this)" class="p-1 text-slate-400 hover:text-slate-900 dark:text-slate-500 dark:hover:text-white transition-colors" title="Copiar Token">
                                 <i data-lucide="copy" class="w-4 h-4"></i>
                             </button>
                         </div>

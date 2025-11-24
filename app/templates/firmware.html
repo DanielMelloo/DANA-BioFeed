@@ -7,28 +7,28 @@
             <i data-lucide="cpu" class="w-6 h-6 text-white"></i>
         </div>
         <div>
-            <h1 class="text-2xl font-bold text-white">Gerador de Firmware ESP32</h1>
-            <p class="text-slate-400">Configure e baixe o código para o seu microcontrolador.</p>
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Gerador de Firmware ESP32</h1>
+            <p class="text-slate-500 dark:text-slate-400">Configure e baixe o código para o seu microcontrolador.</p>
         </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Configuration Form -->
         <div class="lg:col-span-1 space-y-6">
-            <div class="bg-slate-900 rounded-xl border border-slate-800 p-6">
-                <h3 class="text-lg font-bold text-white mb-4">Configuração</h3>
+            <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Configuração</h3>
                 <form id="firmwareForm" class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-slate-400 mb-1">Nome da Rede WiFi (SSID)</label>
-                        <input type="text" id="wifi_ssid" placeholder="MinhaCasa_2G" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-indigo-500 outline-none">
+                        <label class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Nome da Rede WiFi (SSID)</label>
+                        <input type="text" id="wifi_ssid" placeholder="MinhaCasa_2G" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-2 text-slate-900 dark:text-white focus:border-indigo-500 outline-none">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-slate-400 mb-1">Senha do WiFi</label>
-                        <input type="text" id="wifi_pass" placeholder="senha123" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-indigo-500 outline-none">
+                        <label class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Senha do WiFi</label>
+                        <input type="text" id="wifi_pass" placeholder="senha123" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-2 text-slate-900 dark:text-white focus:border-indigo-500 outline-none">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-slate-400 mb-1">Selecione o Habitat</label>
-                        <select id="feeder_select" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-indigo-500 outline-none">
+                        <label class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Selecione o Habitat</label>
+                        <select id="feeder_select" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-2 text-slate-900 dark:text-white focus:border-indigo-500 outline-none">
                             {% for feeder in feeders %}
                             <option value="{{ feeder.id }}" data-token="{{ feeder.token }}">{{ feeder.name }}</option>
                             {% endfor %}
@@ -41,11 +41,11 @@
                 </form>
             </div>
 
-            <div class="bg-slate-900 rounded-xl border border-slate-800 p-6">
-                <h3 class="text-lg font-bold text-white mb-4">Instruções</h3>
-                <ol class="list-decimal list-inside space-y-2 text-sm text-slate-400">
+            <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Instruções</h3>
+                <ol class="list-decimal list-inside space-y-2 text-sm text-slate-500 dark:text-slate-400">
                     <li>Instale a IDE do Arduino.</li>
-                    <li>Instale as bibliotecas: <code class="text-indigo-400">ArduinoJson</code>, <code class="text-indigo-400">ESP32Servo</code>.</li>
+                    <li>Instale as bibliotecas: <code class="text-indigo-600 dark:text-indigo-400">ArduinoJson</code>, <code class="text-indigo-600 dark:text-indigo-400">ESP32Servo</code>.</li>
                     <li>Copie o código gerado ao lado.</li>
                     <li>Cole na IDE do Arduino.</li>
                     <li>Selecione a placa ESP32 Dev Module.</li>
@@ -56,11 +56,11 @@
 
         <!-- Code Preview -->
         <div class="lg:col-span-2">
-            <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden flex flex-col h-[600px]">
-                <div class="bg-slate-900 p-3 border-b border-slate-800 flex justify-between items-center">
-                    <span class="text-sm font-mono text-slate-400">esp32_feeder.ino</span>
+            <div class="bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col h-[600px]">
+                <div class="bg-white dark:bg-slate-900 p-3 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
+                    <span class="text-sm font-mono text-slate-500 dark:text-slate-400">esp32_feeder.ino</span>
                     <div class="flex gap-2">
-                        <button onclick="copyCode()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs rounded-lg transition-colors flex items-center gap-2">
+                        <button onclick="copyCode()" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-white text-xs rounded-lg transition-colors flex items-center gap-2">
                             <i data-lucide="copy" class="w-3 h-3"></i> Copiar
                         </button>
                         <button onclick="downloadCode()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs rounded-lg transition-colors flex items-center gap-2">
@@ -69,7 +69,7 @@
                     </div>
                 </div>
                 <div class="flex-1 overflow-auto p-4">
-                    <pre><code id="codeBlock" class="language-cpp text-sm font-mono text-slate-300">
+                    <pre><code id="codeBlock" class="language-cpp text-sm font-mono text-slate-700 dark:text-slate-300">
 // O código será gerado aqui...
                     </code></pre>
                 </div>
