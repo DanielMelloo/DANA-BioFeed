@@ -1,111 +1,406 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="max-w-6xl mx-auto">
+<div class="max-w-7xl mx-auto">
     <div class="mb-8">
         <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Esquema de Ligação</h1>
-        <p class="text-slate-500 dark:text-slate-400">Diagrama de conexões para o sistema BioFeed (ESP32).</p>
+        <p class="text-slate-500 dark:text-slate-400">Diagrama de conexões completo para o sistema BioFeed.</p>
     </div>
 
-    <!-- Diagram Container -->
-    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-8 overflow-x-auto">
+    <!-- Tabs/Sections -->
+    <div class="space-y-12">
         
-        <div class="min-w-[800px] flex justify-center items-center gap-12 relative py-10">
-            
-            <!-- Central Unit: ESP32 -->
-            <div class="relative z-10 w-64 bg-slate-800 text-white rounded-xl p-6 shadow-xl border-2 border-indigo-500 flex flex-col items-center">
-                <div class="w-12 h-12 bg-indigo-600 rounded-lg flex items-center justify-center mb-4 shadow-lg shadow-indigo-900/50">
-                    <i data-lucide="cpu" class="w-8 h-8 text-white"></i>
+        <!-- Section 1: Assembly Diagram (Visual) -->
+        <section>
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                    <i data-lucide="image" class="w-6 h-6"></i>
                 </div>
-                <h3 class="font-bold text-lg mb-1">ESP32 DevKit V1</h3>
-                <p class="text-xs text-slate-400 text-center mb-4">Microcontrolador Principal</p>
-                
-                <div class="w-full space-y-2 text-xs font-mono">
-                    <div class="flex justify-between px-2 py-1 bg-slate-700/50 rounded">
-                        <span class="text-indigo-300">GPIO 13</span>
-                        <span>Servo Motor</span>
+                <h2 class="text-xl font-bold text-slate-900 dark:text-white">Diagrama de Montagem (Ilustrativo)</h2>
+            </div>
+
+            <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-8 overflow-x-auto">
+                <div class="min-w-[1200px] relative py-10">
+                    <!-- Grid Layout -->
+                    <div class="grid grid-cols-3 gap-16 relative z-10">
+                        
+                        <!-- Column 1: Power System -->
+                        <div class="flex flex-col gap-8 items-center justify-center">
+                            <div class="p-4 bg-amber-50 dark:bg-amber-900/10 rounded-lg border border-amber-200 dark:border-amber-800 w-full text-center mb-4">
+                                <h3 class="font-bold text-amber-700 dark:text-amber-400 mb-2">Sistema de Energia</h3>
+                                <p class="text-xs text-amber-600 dark:text-amber-500">5V Estabilizado</p>
+                            </div>
+
+                            <!-- Charger (Wall) -->
+                            <div class="w-64 bg-slate-50 dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-4 relative" id="node-charger">
+                                <div class="w-10 h-10 bg-slate-200 dark:bg-slate-700 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300">
+                                    <i data-lucide="plug" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900 dark:text-white text-sm">Carregador USB</h4>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400">Entrada 5V (Min 2A)</p>
+                                </div>
+                                <!-- Connection Point Right -->
+                                <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-indigo-500 rounded-full translate-x-1.5"></div>
+                            </div>
+
+                            <!-- Charging Module (TP4056) -->
+                            <div class="w-64 bg-slate-50 dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-4 relative" id="node-module">
+                                <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center text-green-600 dark:text-green-400">
+                                    <i data-lucide="battery-charging" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900 dark:text-white text-sm">Módulo TP4056</h4>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400">Gerenciador de Carga</p>
+                                </div>
+                                <!-- Connection Point Top -->
+                                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-3 bg-indigo-500 rounded-full -translate-y-1.5"></div>
+                                <!-- Connection Point Bottom -->
+                                <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-3 h-3 bg-indigo-500 rounded-full translate-y-1.5"></div>
+                                <!-- Connection Point Right -->
+                                <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-red-500 rounded-full translate-x-1.5"></div>
+                            </div>
+
+                            <!-- Battery -->
+                            <div class="w-64 bg-slate-50 dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-4 relative" id="node-battery">
+                                <div class="w-10 h-10 bg-slate-200 dark:bg-slate-700 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300">
+                                    <i data-lucide="battery" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900 dark:text-white text-sm">Bateria 18650</h4>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400">Li-Ion 3.7V</p>
+                                </div>
+                                <!-- Connection Point Top -->
+                                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-3 bg-indigo-500 rounded-full -translate-y-1.5"></div>
+                            </div>
+                        </div>
+
+                        <!-- Column 2: Control (ESP32) -->
+                        <div class="flex flex-col justify-center items-center">
+                            <div class="relative w-72 bg-slate-800 text-white rounded-xl p-6 shadow-xl border-2 border-indigo-500 flex flex-col items-center" id="node-esp32">
+                                <!-- Connection Point Left (Power) -->
+                                <div class="absolute left-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-red-500 rounded-full -translate-x-1.5"></div>
+                                
+                                <div class="w-14 h-14 bg-indigo-600 rounded-lg flex items-center justify-center mb-4 shadow-lg shadow-indigo-900/50">
+                                    <i data-lucide="cpu" class="w-8 h-8 text-white"></i>
+                                </div>
+                                <h3 class="font-bold text-xl mb-1">ESP32</h3>
+                                <p class="text-xs text-slate-400 text-center mb-6">Microcontrolador</p>
+                                
+                                <div class="w-full space-y-3 text-xs font-mono">
+                                    <!-- Pins Right Side -->
+                                    <div class="flex justify-between items-center px-3 py-2 bg-slate-700/50 rounded relative">
+                                        <span class="text-indigo-300">GPIO 13</span>
+                                        <span>Servo</span>
+                                        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-indigo-400 rounded-full translate-x-1"></div>
+                                    </div>
+                                    <div class="flex justify-between items-center px-3 py-2 bg-slate-700/50 rounded relative">
+                                        <span class="text-emerald-300">GPIO 12/14</span>
+                                        <span>Ultrassom</span>
+                                        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-emerald-400 rounded-full translate-x-1"></div>
+                                    </div>
+                                    <div class="flex justify-between items-center px-3 py-2 bg-slate-700/50 rounded relative">
+                                        <span class="text-blue-300">GPIO 26</span>
+                                        <span>Relé</span>
+                                        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-blue-400 rounded-full translate-x-1"></div>
+                                    </div>
+                                    <div class="flex justify-between items-center px-3 py-2 bg-slate-700/50 rounded relative">
+                                        <span class="text-purple-300">GPIO 21/22</span>
+                                        <span>Balança</span>
+                                        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-purple-400 rounded-full translate-x-1"></div>
+                                    </div>
+                                    <div class="flex justify-between items-center px-3 py-2 bg-slate-700/50 rounded border border-red-500/30">
+                                        <span class="text-red-300">VIN / GND</span>
+                                        <span>Power In</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Column 3: Peripherals -->
+                        <div class="flex flex-col gap-6 justify-center">
+                            
+                            <!-- Servo -->
+                            <div class="w-64 bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-4 relative" id="node-servo">
+                                <div class="absolute left-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-indigo-500 rounded-full -translate-x-1.5"></div>
+                                <div class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                                    <i data-lucide="rotate-cw" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900 dark:text-white text-sm">Servo Motor</h4>
+                                    <span class="text-[10px] font-mono text-indigo-500 block">Pin 13 + 5V Ext</span>
+                                </div>
+                            </div>
+
+                            <!-- Ultrasonic -->
+                            <div class="w-64 bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-4 relative" id="node-ultra">
+                                <div class="absolute left-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-emerald-500 rounded-full -translate-x-1.5"></div>
+                                <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                                    <i data-lucide="activity" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900 dark:text-white text-sm">Sensor HC-SR04</h4>
+                                    <span class="text-[10px] font-mono text-emerald-500 block">Trig 12 / Echo 14</span>
+                                </div>
+                            </div>
+
+                            <!-- Relay -->
+                            <div class="w-64 bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-4 relative" id="node-relay">
+                                <div class="absolute left-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-blue-500 rounded-full -translate-x-1.5"></div>
+                                <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center text-blue-600 dark:text-blue-400">
+                                    <i data-lucide="droplet" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900 dark:text-white text-sm">Módulo Relé</h4>
+                                    <span class="text-[10px] font-mono text-blue-500 block">Pin 26 + 5V Ext</span>
+                                </div>
+                            </div>
+
+                            <!-- Scale System (HX711 + Load Cell) -->
+                            <div class="w-64 bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm relative" id="node-scale">
+                                <div class="absolute left-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-purple-500 rounded-full -translate-x-1.5"></div>
+                                <div class="flex items-center gap-4 mb-2">
+                                    <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center text-purple-600 dark:text-purple-400">
+                                        <i data-lucide="scale" class="w-6 h-6"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-slate-900 dark:text-white text-sm">Sistema de Peso</h4>
+                                        <span class="text-[10px] font-mono text-purple-500 block">HX711 + Célula</span>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-50 dark:bg-slate-900 p-2 rounded text-[10px] font-mono text-slate-500 dark:text-slate-400 border border-slate-100 dark:border-slate-700">
+                                    <div class="flex justify-between"><span>DT/SCK</span> <span>→ GPIO 21/22</span></div>
+                                    <div class="flex justify-between"><span>E+/E-</span> <span>→ Célula</span></div>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
-                    <div class="flex justify-between px-2 py-1 bg-slate-700/50 rounded">
-                        <span class="text-emerald-300">GPIO 12</span>
-                        <span>Ultrassônico (Trig)</span>
-                    </div>
-                    <div class="flex justify-between px-2 py-1 bg-slate-700/50 rounded">
-                        <span class="text-emerald-300">GPIO 14</span>
-                        <span>Ultrassônico (Echo)</span>
-                    </div>
-                    <div class="flex justify-between px-2 py-1 bg-slate-700/50 rounded">
-                        <span class="text-blue-300">GPIO 26</span>
-                        <span>Relé (Solenoide)</span>
-                    </div>
-                    <div class="flex justify-between px-2 py-1 bg-slate-700/50 rounded">
-                        <span class="text-red-300">VIN / GND</span>
-                        <span>Fonte 5V</span>
+
+                    <!-- SVG Connections Layer -->
+                    <svg class="absolute inset-0 w-full h-full pointer-events-none z-0" style="stroke-width: 2px;">
+                        <defs>
+                            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="#64748b" />
+                            </marker>
+                        </defs>
+
+                        <!-- Power Flow -->
+                        <path d="M 280 200 L 300 200 L 300 300 L 280 300" stroke="#ef4444" fill="none" stroke-dasharray="5,5" class="opacity-40" />
+                        <path d="M 150 350 L 150 400" stroke="#ef4444" fill="none" stroke-width="3" class="opacity-60" />
+                        <path d="M 280 300 L 450 300" stroke="#ef4444" fill="none" stroke-width="3" class="opacity-60" />
+
+                        <!-- Signal Connections -->
+                        <path d="M 740 250 L 850 150" stroke="#6366f1" fill="none" class="opacity-50" stroke-dasharray="5,5"/>
+                        <path d="M 740 280 L 850 250" stroke="#10b981" fill="none" class="opacity-50" stroke-dasharray="5,5"/>
+                        <path d="M 740 310 L 850 350" stroke="#3b82f6" fill="none" class="opacity-50" stroke-dasharray="5,5"/>
+                        <path d="M 740 340 L 850 450" stroke="#a855f7" fill="none" class="opacity-50" stroke-dasharray="5,5"/>
+                    </svg>
+                </div>
+
+                <!-- Power Supply Note -->
+                <div class="mt-8 p-4 bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-900/30 rounded-lg flex items-start gap-3">
+                    <i data-lucide="triangle-alert" class="w-5 h-5 text-amber-500 mt-0.5"></i>
+                    <div>
+                        <h4 class="font-bold text-amber-700 dark:text-amber-400 text-sm">Atenção com a Alimentação</h4>
+                        <p class="text-xs text-amber-600 dark:text-amber-500 mt-1">
+                            Componentes de alta potência como o <strong>Servo Motor</strong> e a <strong>Solenoide</strong> devem ser alimentados diretamente pela fonte/bateria (5V), compartilhando apenas o GND com o ESP32. Não utilize os pinos 5V/3V3 do ESP32 para alimentá-los.
+                        </p>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <!-- Connections Lines (SVG Overlay) -->
-            <svg class="absolute inset-0 w-full h-full pointer-events-none z-0" style="stroke-width: 2px;">
-                <!-- Servo Line -->
-                <path d="M 400 150 L 600 80" stroke="#6366f1" fill="none" class="opacity-50" stroke-dasharray="5,5"/>
-                <!-- Ultrasonic Line -->
-                <path d="M 400 200 L 600 200" stroke="#10b981" fill="none" class="opacity-50" stroke-dasharray="5,5"/>
-                <!-- Relay Line -->
-                <path d="M 400 250 L 600 320" stroke="#3b82f6" fill="none" class="opacity-50" stroke-dasharray="5,5"/>
-            </svg>
-
-            <!-- Peripherals Column -->
-            <div class="flex flex-col gap-8 z-10">
-                
-                <!-- Servo -->
-                <div class="w-56 bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-4">
-                    <div class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center text-indigo-600 dark:text-indigo-400">
-                        <i data-lucide="rotate-cw" class="w-6 h-6"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-slate-900 dark:text-white text-sm">Servo Motor</h4>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">Controle da Porta</p>
-                        <span class="text-[10px] font-mono text-indigo-500">Pin 13 (PWM)</span>
-                    </div>
+        <!-- Section 2: Electrical Schematic (Technical) -->
+        <section>
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                    <i data-lucide="activity" class="w-6 h-6"></i>
                 </div>
-
-                <!-- Ultrasonic -->
-                <div class="w-56 bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-4">
-                    <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center text-emerald-600 dark:text-emerald-400">
-                        <i data-lucide="activity" class="w-6 h-6"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-slate-900 dark:text-white text-sm">Sensor HC-SR04</h4>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">Nível de Ração</p>
-                        <span class="text-[10px] font-mono text-emerald-500">Trig 12 / Echo 14</span>
-                    </div>
-                </div>
-
-                <!-- Relay/Solenoid -->
-                <div class="w-56 bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-4">
-                    <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center text-blue-600 dark:text-blue-400">
-                        <i data-lucide="droplet" class="w-6 h-6"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-slate-900 dark:text-white text-sm">Módulo Relé</h4>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">Válvula Solenoide</p>
-                        <span class="text-[10px] font-mono text-blue-500">Pin 26 (Digital)</span>
-                    </div>
-                </div>
-
+                <h2 class="text-xl font-bold text-slate-900 dark:text-white">Esquema Elétrico (Técnico)</h2>
             </div>
-        </div>
 
-        <!-- Power Supply Note -->
-        <div class="mt-8 p-4 bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-900/30 rounded-lg flex items-start gap-3">
-            <i data-lucide="zap" class="w-5 h-5 text-amber-500 mt-0.5"></i>
-            <div>
-                <h4 class="font-bold text-amber-700 dark:text-amber-400 text-sm">Alimentação Externa Recomendada</h4>
-                <p class="text-xs text-amber-600 dark:text-amber-500 mt-1">
-                    Não alimente o Servo Motor e a Solenoide diretamente pelos pinos 5V do ESP32. Utilize uma fonte externa de 5V (min 2A) com o GND comum ao ESP32 para evitar instabilidade.
-                </p>
+            <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 overflow-x-auto">
+                <div class="min-w-[1000px] h-[600px] bg-[#f8f9fa] dark:bg-[#1e293b] rounded-lg relative border border-slate-200 dark:border-slate-700">
+                    
+                    <!-- Schematic SVG -->
+                    <svg class="w-full h-full" viewBox="0 0 1000 600">
+                        <defs>
+                            <!-- Ground Symbol -->
+                            <g id="gnd">
+                                <line x1="0" y1="0" x2="0" y2="10" stroke="currentColor" stroke-width="2"/>
+                                <line x1="-10" y1="10" x2="10" y2="10" stroke="currentColor" stroke-width="2"/>
+                                <line x1="-6" y1="14" x2="6" y2="14" stroke="currentColor" stroke-width="2"/>
+                                <line x1="-2" y1="18" x2="2" y2="18" stroke="currentColor" stroke-width="2"/>
+                            </g>
+                            <!-- VCC Symbol -->
+                            <g id="vcc">
+                                <line x1="0" y1="0" x2="0" y2="-10" stroke="currentColor" stroke-width="2"/>
+                                <circle cx="0" cy="-12" r="2" stroke="currentColor" fill="none" stroke-width="2"/>
+                                <text x="5" y="-5" font-family="monospace" font-size="10" fill="currentColor">5V</text>
+                            </g>
+                        </defs>
+
+                        <!-- Styles -->
+                        <style>
+                            .wire { stroke: #64748b; stroke-width: 2; fill: none; }
+                            .component-body { fill: #ffffff; stroke: #334155; stroke-width: 2; }
+                            .dark .component-body { fill: #1e293b; stroke: #94a3b8; }
+                            .pin-label { font-family: monospace; font-size: 10px; fill: #64748b; }
+                            .dark .pin-label { fill: #94a3b8; }
+                            .component-label { font-family: sans-serif; font-weight: bold; font-size: 12px; fill: #0f172a; }
+                            .dark .component-label { fill: #f8fafc; }
+                            .net-label { font-family: monospace; font-size: 10px; fill: #ef4444; font-weight: bold; }
+                        </style>
+
+                        <!-- Power Bus (Top) -->
+                        <line x1="50" y1="50" x2="950" y2="50" class="wire" stroke="#ef4444"/>
+                        <text x="50" y="40" class="net-label">VCC (5V)</text>
+
+                        <!-- Ground Bus (Bottom) -->
+                        <line x1="50" y1="550" x2="950" y2="550" class="wire" stroke="#3b82f6"/>
+                        <text x="50" y="570" class="net-label">GND</text>
+
+                        <!-- ESP32 (Center) -->
+                        <g transform="translate(400, 200)">
+                            <rect x="0" y="0" width="200" height="200" class="component-body"/>
+                            <text x="100" y="100" text-anchor="middle" class="component-label">ESP32 DEVKIT V1</text>
+                            
+                            <!-- Pins Left -->
+                            <text x="10" y="30" class="pin-label">VIN</text>
+                            <line x1="0" y1="25" x2="-20" y2="25" class="wire"/>
+                            <line x1="-20" y1="25" x2="-20" y2="-150" class="wire" stroke="#ef4444"/> <!-- To VCC -->
+
+                            <text x="10" y="180" class="pin-label">GND</text>
+                            <line x1="0" y1="175" x2="-20" y2="175" class="wire"/>
+                            <line x1="-20" y1="175" x2="-20" y2="350" class="wire" stroke="#3b82f6"/> <!-- To GND -->
+
+                            <!-- Pins Right -->
+                            <text x="190" y="30" text-anchor="end" class="pin-label">D13 (Servo)</text>
+                            <line x1="200" y1="25" x2="250" y2="25" class="wire"/>
+
+                            <text x="190" y="60" text-anchor="end" class="pin-label">D12 (Trig)</text>
+                            <line x1="200" y1="55" x2="250" y2="55" class="wire"/>
+
+                            <text x="190" y="90" text-anchor="end" class="pin-label">D14 (Echo)</text>
+                            <line x1="200" y1="85" x2="250" y2="85" class="wire"/>
+
+                            <text x="190" y="120" text-anchor="end" class="pin-label">D26 (Relay)</text>
+                            <line x1="200" y1="115" x2="250" y2="115" class="wire"/>
+
+                            <text x="190" y="150" text-anchor="end" class="pin-label">D21 (SDA)</text>
+                            <line x1="200" y1="145" x2="250" y2="145" class="wire"/>
+
+                            <text x="190" y="180" text-anchor="end" class="pin-label">D22 (SCL)</text>
+                            <line x1="200" y1="175" x2="250" y2="175" class="wire"/>
+                        </g>
+
+                        <!-- Power Source (Battery + TP4056) -->
+                        <g transform="translate(100, 250)">
+                            <rect x="0" y="0" width="100" height="80" class="component-body"/>
+                            <text x="50" y="40" text-anchor="middle" class="component-label">TP4056</text>
+                            
+                            <!-- Input -->
+                            <text x="10" y="20" class="pin-label">IN+</text>
+                            <text x="10" y="70" class="pin-label">IN-</text>
+                            
+                            <!-- Output -->
+                            <text x="90" y="20" text-anchor="end" class="pin-label">OUT+</text>
+                            <line x1="100" y1="15" x2="120" y2="15" class="wire"/>
+                            <line x1="120" y1="15" x2="120" y2="-200" class="wire" stroke="#ef4444"/> <!-- To VCC Bus -->
+
+                            <text x="90" y="70" text-anchor="end" class="pin-label">OUT-</text>
+                            <line x1="100" y1="65" x2="120" y2="65" class="wire"/>
+                            <line x1="120" y1="65" x2="120" y2="300" class="wire" stroke="#3b82f6"/> <!-- To GND Bus -->
+
+                            <!-- Battery Conn -->
+                            <text x="50" y="75" text-anchor="middle" class="pin-label">B+/B-</text>
+                            <circle cx="50" cy="80" r="15" stroke="#64748b" fill="none"/>
+                            <text x="50" y="84" text-anchor="middle" font-size="8" fill="#64748b">BAT</text>
+                        </g>
+
+                        <!-- Servo Motor -->
+                        <g transform="translate(700, 50)">
+                            <rect x="0" y="0" width="80" height="60" class="component-body"/>
+                            <text x="40" y="30" text-anchor="middle" class="component-label">SERVO</text>
+                            
+                            <line x1="0" y1="15" x2="-50" y2="15" class="wire" stroke="#ef4444"/> <!-- VCC -->
+                            <line x1="-50" y1="15" x2="-50" y2="0" class="wire" stroke="#ef4444"/> <!-- To Bus -->
+
+                            <line x1="0" y1="30" x2="-50" y2="30" class="wire"/> <!-- Signal -->
+                            <line x1="-50" y1="30" x2="-50" y2="175" class="wire"/> <!-- To GPIO 13 -->
+
+                            <line x1="0" y1="45" x2="-20" y2="45" class="wire" stroke="#3b82f6"/> <!-- GND -->
+                            <line x1="-20" y1="45" x2="-20" y2="500" class="wire" stroke="#3b82f6"/> <!-- To Bus -->
+                        </g>
+
+                        <!-- Ultrasonic -->
+                        <g transform="translate(700, 150)">
+                            <rect x="0" y="0" width="80" height="80" class="component-body"/>
+                            <text x="40" y="40" text-anchor="middle" class="component-label">HC-SR04</text>
+                            
+                            <text x="10" y="20" class="pin-label">VCC</text>
+                            <line x1="0" y1="15" x2="-30" y2="15" class="wire" stroke="#ef4444"/>
+                            <line x1="-30" y1="15" x2="-30" y2="-100" class="wire" stroke="#ef4444"/>
+
+                            <text x="10" y="40" class="pin-label">TRIG</text>
+                            <line x1="0" y1="35" x2="-50" y2="35" class="wire"/>
+                            <line x1="-50" y1="35" x2="-50" y2="70" class="wire"/> <!-- To GPIO 12 -->
+
+                            <text x="10" y="60" class="pin-label">ECHO</text>
+                            <line x1="0" y1="55" x2="-50" y2="55" class="wire"/>
+                            <line x1="-50" y1="55" x2="-50" y2="80" class="wire"/> <!-- To GPIO 14 -->
+
+                            <text x="10" y="80" class="pin-label">GND</text>
+                            <line x1="0" y1="75" x2="-30" y2="75" class="wire" stroke="#3b82f6"/>
+                            <line x1="-30" y1="75" x2="-30" y2="400" class="wire" stroke="#3b82f6"/>
+                        </g>
+
+                        <!-- Relay -->
+                        <g transform="translate(700, 280)">
+                            <rect x="0" y="0" width="80" height="60" class="component-body"/>
+                            <text x="40" y="30" text-anchor="middle" class="component-label">RELAY</text>
+                            
+                            <text x="10" y="20" class="pin-label">VCC</text>
+                            <line x1="0" y1="15" x2="-30" y2="15" class="wire" stroke="#ef4444"/>
+                            <line x1="-30" y1="15" x2="-30" y2="-230" class="wire" stroke="#ef4444"/>
+
+                            <text x="10" y="35" class="pin-label">IN</text>
+                            <line x1="0" y1="30" x2="-50" y2="30" class="wire"/>
+                            <line x1="-50" y1="30" x2="-50" y2="5" class="wire"/> <!-- To GPIO 26 -->
+
+                            <text x="10" y="50" class="pin-label">GND</text>
+                            <line x1="0" y1="45" x2="-30" y2="45" class="wire" stroke="#3b82f6"/>
+                            <line x1="-30" y1="45" x2="-30" y2="270" class="wire" stroke="#3b82f6"/>
+                        </g>
+
+                        <!-- HX711 -->
+                        <g transform="translate(700, 400)">
+                            <rect x="0" y="0" width="80" height="80" class="component-body"/>
+                            <text x="40" y="40" text-anchor="middle" class="component-label">HX711</text>
+                            
+                            <text x="10" y="20" class="pin-label">VCC</text>
+                            <line x1="0" y1="15" x2="-30" y2="15" class="wire" stroke="#ef4444"/>
+                            <line x1="-30" y1="15" x2="-30" y2="-350" class="wire" stroke="#ef4444"/>
+
+                            <text x="10" y="40" class="pin-label">DT</text>
+                            <line x1="0" y1="35" x2="-50" y2="35" class="wire"/>
+                            <line x1="-50" y1="35" x2="-50" y2="-55" class="wire"/> <!-- To GPIO 21 -->
+
+                            <text x="10" y="60" class="pin-label">SCK</text>
+                            <line x1="0" y1="55" x2="-50" y2="55" class="wire"/>
+                            <line x1="-50" y1="55" x2="-50" y2="-55" class="wire"/> <!-- To GPIO 22 -->
+
+                            <text x="10" y="80" class="pin-label">GND</text>
+                            <line x1="0" y1="75" x2="-30" y2="75" class="wire" stroke="#3b82f6"/>
+                            <line x1="-30" y1="75" x2="-30" y2="150" class="wire" stroke="#3b82f6"/>
+                        </g>
+
+                    </svg>
+                </div>
             </div>
-        </div>
+        </section>
+
     </div>
 </div>
 {% endblock %}
