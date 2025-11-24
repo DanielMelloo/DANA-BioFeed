@@ -33,6 +33,10 @@ void setup() {
   feederServo.attach(SERVO_PIN);
   feederServo.write(SERVO_CLOSED_POS);
 
+  // Sensor Setup
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+
   // WiFi Setup
   connectWiFi();
 }
@@ -62,6 +66,19 @@ void connectWiFi() {
   Serial.println(WiFi.localIP());
 }
 
+long readUltrasonic() {
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+  
+  long duration = pulseIn(ECHO_PIN, HIGH);
+  long distanceCm = duration * 0.034 / 2;
+  
+  return distanceCm;
+}
+
 void sendHeartbeat() {
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
@@ -73,12 +90,19 @@ void sendHeartbeat() {
     http.addHeader("Content-Type", "application/json");
     http.addHeader("Authorization", String("Bearer ") + String(FEEDER_TOKEN));
 
+    // Read Sensors
+    long dist = readUltrasonic();
+    // Map distance to percentage (Example: 20cm = 0%, 5cm = 100%)
+    // Adjust these values based on your actual tank depth
+    int level = map(dist, 20, 5, 0, 100); 
+    level = constrain(level, 0, 100);
+
     // Create JSON Payload
     StaticJsonDocument<200> doc;
     doc["battery"] = 100; // Mock battery
-    doc["weight"] = 0;    // Mock weight (or read load cell)
+    doc["weight"] = level; // Sending Level as "weight" for now, or use a specific field
     doc["water_sensor"] = "LSH"; // Mock water sensor
-    doc["firmware_version"] = "1.0.0-ESP32";
+    doc["firmware_version"] = "1.1.0-ESP32";
 
     String requestBody;
     serializeJson(doc, requestBody);
@@ -107,6 +131,8 @@ void processResponse(String jsonResponse) {
   if (error) {
     Serial.print("deserializeJson() failed: ");
     Serial.println(error.c_str());
+    Serial.println("Raw Response:");
+    Serial.println(jsonResponse); // Debug Raw Response
     return;
   }
 
@@ -114,6 +140,7 @@ void processResponse(String jsonResponse) {
   JsonArray commands = doc["commands"];
   for (JsonObject cmd : commands) {
     String type = cmd["type"];
+    String cmdId = cmd["id"]; // Capture Command ID
     int duration = cmd["duration"] | 1000;
     
     Serial.print("Executing Command: ");
@@ -121,10 +148,10 @@ void processResponse(String jsonResponse) {
 
     if (type == "feed") {
       dispenseFood(duration);
-      ackCommand("feed", "executed");
+      ackCommand("feed", "executed", cmdId);
     } else if (type == "refill") {
-      // Handle refill logic (e.g., open top gate)
-      ackCommand("refill", "executed");
+      // Handle refill logic
+      ackCommand("refill", "executed", cmdId);
     }
   }
 }
@@ -137,7 +164,7 @@ void dispenseFood(int duration) {
   feederServo.write(SERVO_CLOSED_POS);
 }
 
-void ackCommand(String cmdType, String status) {
+void ackCommand(String cmdType, String status, String cmdId) {
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
     String url = String(SERVER_URL) + "/feeder/" + String(FEEDER_ID) + "/ack";
@@ -147,7 +174,7 @@ void ackCommand(String cmdType, String status) {
     http.addHeader("Authorization", String("Bearer ") + String(FEEDER_TOKEN));
 
     StaticJsonDocument<200> doc;
-    doc["command_id"] = "esp-ack"; // In real scenario, pass the ID received
+    doc["command_id"] = cmdId; // Send back the real ID
     doc["status"] = status;
 
     String requestBody;
