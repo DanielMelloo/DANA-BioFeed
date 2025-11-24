@@ -13,25 +13,33 @@ def migrate():
     
     if not db_path:
         print("Database not found! Checked: " + ", ".join(db_paths))
-        # Create a new one if needed, but for migration we expect it to exist.
         return
 
-    print(f"Migrating database: {db_path}")
+    abs_path = os.path.abspath(db_path)
+    print(f"Migrating database: {abs_path}")
     
     try:
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
         
+        # Debug: List existing columns
+        print("--- Current Columns in 'feeders' ---")
+        cursor.execute("PRAGMA table_info(feeders)")
+        columns = [info[1] for info in cursor.fetchall()]
+        print(columns)
+        print("------------------------------------")
+        
         # Helper to add column safely
         def add_column(table, column_def):
+            col_name = column_def.split()[0]
             try:
                 cursor.execute(f"ALTER TABLE {table} ADD COLUMN {column_def}")
-                print(f"Added column: {column_def} to {table}")
+                print(f"✅ Added column: {column_def} to {table}")
             except sqlite3.OperationalError as e:
                 if "duplicate column" in str(e):
-                    print(f"Column already exists: {column_def} in {table}")
+                    print(f"ℹ️  Column already exists: {col_name} in {table}")
                 else:
-                    print(f"Error adding {column_def} to {table}: {e}")
+                    print(f"❌ Error adding {col_name} to {table}: {e}")
 
         # Feeders Table Updates
         add_column("feeders", "block_name VARCHAR(64)")
@@ -44,6 +52,14 @@ def migrate():
         add_column("tanks", "block_name VARCHAR(64)")
         
         conn.commit()
+        
+        # Verify after update
+        print("--- Updated Columns in 'feeders' ---")
+        cursor.execute("PRAGMA table_info(feeders)")
+        columns = [info[1] for info in cursor.fetchall()]
+        print(columns)
+        print("------------------------------------")
+        
         conn.close()
         print("Migration completed successfully.")
         
