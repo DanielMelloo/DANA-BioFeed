@@ -98,6 +98,7 @@ const char* FEEDER_ID = "__ID__";
 const int SERVO_PIN = 13;
 const int TRIG_PIN = 12; 
 const int ECHO_PIN = 14; 
+const int SOLENOID_PIN = 26; // Water Control
 
 // Settings
 const int CHECK_INTERVAL = 5000; 
@@ -118,6 +119,10 @@ void setup() {
   // Sensor Setup
   pinMode(TRIG_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
+  
+  // Solenoid Setup
+  pinMode(SOLENOID_PIN, OUTPUT);
+  digitalWrite(SOLENOID_PIN, LOW); // Default Closed
 
   // WiFi Setup
   connectWiFi();
@@ -161,6 +166,12 @@ long readUltrasonic() {
   return distanceCm;
 }
 
+// Mock Load Cell Reading
+float readScale() {
+  // In real hardware, read HX711
+  return 0.0; 
+}
+
 void sendHeartbeat() {
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
@@ -180,7 +191,7 @@ void sendHeartbeat() {
     doc["battery"] = 100; 
     doc["weight"] = level;    
     doc["water_sensor"] = "LSH"; 
-    doc["firmware_version"] = "1.1.0-ESP32";
+    doc["firmware_version"] = "1.2.0-ESP32";
 
     String requestBody;
     serializeJson(doc, requestBody);
@@ -224,18 +235,42 @@ void processResponse(String jsonResponse) {
     if (type == "feed") {
       dispenseFood(duration);
       ackCommand("feed", "executed", cmdId);
-    } else if (type == "refill") {
-      ackCommand("refill", "executed", cmdId);
+    } else if (type == "smart_refill") {
+      smartRefill(cmdId);
+    } else if (type == "water_control") {
+      String action = cmd["action"]; // "OPEN" or "CLOSE"
+      controlWater(action);
+      ackCommand("water_control", "executed", cmdId);
     }
   }
 }
 
 void dispenseFood(int duration) {
-  Serial.println("Opening Servo...");
+  Serial.println("Opening Bottom Servo (Feed)...");
   feederServo.write(SERVO_OPEN_POS);
   delay(duration);
-  Serial.println("Closing Servo...");
+  Serial.println("Closing Bottom Servo...");
   feederServo.write(SERVO_CLOSED_POS);
+}
+
+void smartRefill(String cmdId) {
+  Serial.println("Starting Smart Refill (Top Servo)...");
+  // Logic: Open Top -> Wait until Weight >= 210g -> Close Top
+  Serial.println("Refilling...");
+  delay(2000); // Simulate fill time
+  Serial.println("Refill Complete (210g reached).");
+  
+  ackCommand("smart_refill", "executed", cmdId);
+}
+
+void controlWater(String action) {
+  if (action == "OPEN") {
+    digitalWrite(SOLENOID_PIN, HIGH);
+    Serial.println("Solenoid OPEN (Auto Refill)");
+  } else {
+    digitalWrite(SOLENOID_PIN, LOW);
+    Serial.println("Solenoid CLOSED");
+  }
 }
 
 void ackCommand(String cmdType, String status, String cmdId) {

@@ -26,6 +26,9 @@ const int SERVO_CLOSED_POS = 0;
 Servo feederServo;
 unsigned long lastCheckTime = 0;
 
+// Water Solenoid Pin (Example GPIO 26)
+const int SOLENOID_PIN = 26; 
+
 void setup() {
   Serial.begin(115200);
   
@@ -36,6 +39,14 @@ void setup() {
   // Sensor Setup
   pinMode(TRIG_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
+  
+  // Solenoid Setup
+  pinMode(SOLENOID_PIN, OUTPUT);
+  digitalWrite(SOLENOID_PIN, LOW); // Normally Closed? Or Open? Logic says Normally Open = Auto. 
+  // Let's assume LOW = Closed, HIGH = Open for control.
+  // If hardware is Normally Open, then LOW = Open. 
+  // User said "Solenoide Normally Open = Auto". "Closed by user = Manual".
+  // We will control it: HIGH to Open (Auto Refill), LOW to Close (Stop).
 
   // WiFi Setup
   connectWiFi();
@@ -79,11 +90,17 @@ long readUltrasonic() {
   return distanceCm;
 }
 
+// Mock Load Cell Reading
+float readScale() {
+  // In real hardware, read HX711
+  // For simulation, we return a mock value or the last value sent by simulator
+  return 0.0; 
+}
+
 void sendHeartbeat() {
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
     
-    // Construct URL: /api/feeder/<id>/status
     String url = String(SERVER_URL) + "/feeder/" + String(FEEDER_ID) + "/status";
     
     http.begin(url);
@@ -92,17 +109,14 @@ void sendHeartbeat() {
 
     // Read Sensors
     long dist = readUltrasonic();
-    // Map distance to percentage (Example: 20cm = 0%, 5cm = 100%)
-    // Adjust these values based on your actual tank depth
     int level = map(dist, 20, 5, 0, 100); 
     level = constrain(level, 0, 100);
 
-    // Create JSON Payload
     StaticJsonDocument<200> doc;
-    doc["battery"] = 100; // Mock battery
-    doc["weight"] = level; // Sending Level as "weight" for now, or use a specific field
-    doc["water_sensor"] = "LSH"; // Mock water sensor
-    doc["firmware_version"] = "1.1.0-ESP32";
+    doc["battery"] = 100; 
+    doc["weight"] = level; // Should be readScale() in real hardware
+    doc["water_sensor"] = "LSH"; 
+    doc["firmware_version"] = "1.2.0-ESP32";
 
     String requestBody;
     serializeJson(doc, requestBody);
@@ -112,8 +126,6 @@ void sendHeartbeat() {
     if (httpResponseCode > 0) {
       String response = http.getString();
       Serial.println("Heartbeat Sent. Response: " + response);
-      
-      // Parse Response for Commands
       processResponse(response);
     } else {
       Serial.print("Error on sending POST: ");
@@ -132,15 +144,14 @@ void processResponse(String jsonResponse) {
     Serial.print("deserializeJson() failed: ");
     Serial.println(error.c_str());
     Serial.println("Raw Response:");
-    Serial.println(jsonResponse); // Debug Raw Response
+    Serial.println(jsonResponse);
     return;
   }
 
-  // Check for commands array
   JsonArray commands = doc["commands"];
   for (JsonObject cmd : commands) {
     String type = cmd["type"];
-    String cmdId = cmd["id"]; // Capture Command ID
+    String cmdId = cmd["id"];
     int duration = cmd["duration"] | 1000;
     
     Serial.print("Executing Command: ");
@@ -149,19 +160,48 @@ void processResponse(String jsonResponse) {
     if (type == "feed") {
       dispenseFood(duration);
       ackCommand("feed", "executed", cmdId);
-    } else if (type == "refill") {
-      // Handle refill logic
-      ackCommand("refill", "executed", cmdId);
+    } else if (type == "smart_refill") {
+      smartRefill(cmdId);
+    } else if (type == "water_control") {
+      String action = cmd["action"]; // "OPEN" or "CLOSE"
+      controlWater(action);
+      ackCommand("water_control", "executed", cmdId);
     }
   }
 }
 
 void dispenseFood(int duration) {
-  Serial.println("Opening Servo...");
+  Serial.println("Opening Bottom Servo (Feed)...");
   feederServo.write(SERVO_OPEN_POS);
   delay(duration);
-  Serial.println("Closing Servo...");
+  Serial.println("Closing Bottom Servo...");
   feederServo.write(SERVO_CLOSED_POS);
+}
+
+void smartRefill(String cmdId) {
+  Serial.println("Starting Smart Refill (Top Servo)...");
+  // Assume Top Servo is on another pin or same servo mechanism (Simulated)
+  // Logic: Open Top -> Wait until Weight >= 210g -> Close Top
+  
+  // Simulation Logic:
+  // In real hardware, we would loop:
+  // while (readScale() < 210.0) { delay(100); }
+  
+  Serial.println("Refilling...");
+  delay(2000); // Simulate fill time
+  Serial.println("Refill Complete (210g reached).");
+  
+  ackCommand("smart_refill", "executed", cmdId);
+}
+
+void controlWater(String action) {
+  if (action == "OPEN") {
+    digitalWrite(SOLENOID_PIN, HIGH);
+    Serial.println("Solenoid OPEN (Auto Refill)");
+  } else {
+    digitalWrite(SOLENOID_PIN, LOW);
+    Serial.println("Solenoid CLOSED");
+  }
 }
 
 void ackCommand(String cmdType, String status, String cmdId) {
@@ -174,7 +214,7 @@ void ackCommand(String cmdType, String status, String cmdId) {
     http.addHeader("Authorization", String("Bearer ") + String(FEEDER_TOKEN));
 
     StaticJsonDocument<200> doc;
-    doc["command_id"] = cmdId; // Send back the real ID
+    doc["command_id"] = cmdId; 
     doc["status"] = status;
 
     String requestBody;

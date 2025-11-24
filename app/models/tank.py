@@ -1,4 +1,3 @@
-
 from database import db
 from datetime import datetime
 
@@ -12,12 +11,15 @@ class Tank(db.Model):
     capacity = db.Column(db.String(32), nullable=True) # e.g. "5L", "2kg" (Display only)
     current_weight = db.Column(db.Float, default=0.0) # Current weight in kg/L
     max_weight = db.Column(db.Float, default=5.0) # Max capacity in kg/L
+    
     # Device Connectivity
     token = db.Column(db.String(64), unique=True, nullable=True)
     online = db.Column(db.Boolean, default=False)
     last_seen = db.Column(db.DateTime, nullable=True)
     last_refill = db.Column(db.DateTime, default=datetime.utcnow)
-
+    
+    # Block Logic
+    block_name = db.Column(db.String(64), nullable=True)
 
     def __init__(self, **kwargs):
         super(Tank, self).__init__(**kwargs)
@@ -36,5 +38,6 @@ class Tank(db.Model):
             'level': self.level,
             'capacity': self.capacity,
             'online': self.online,
-            'last_refill': self.last_refill.isoformat() if self.last_refill else None
+            'last_refill': self.last_refill.isoformat() if self.last_refill else None,
+            'block_name': self.block_name
         }

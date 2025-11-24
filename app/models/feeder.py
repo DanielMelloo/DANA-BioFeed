@@ -43,6 +43,11 @@ class Feeder(db.Model):
     
     status = db.Column(db.String(16), default='NORMAL') # NORMAL, WARNING, CRITICAL, TRIP
     trip_reason = db.Column(db.String(128), nullable=True) # Reason for TRIP
+    
+    # Block & Water Logic
+    block_name = db.Column(db.String(64), nullable=True) # Grouping (e.g., "Block A")
+    water_mode = db.Column(db.String(16), default='AUTO') # AUTO, MANUAL
+    water_valve_state = db.Column(db.String(16), default='CLOSED') # OPEN, CLOSED
 
     def __init__(self, name, food_tank_id=None, water_tank_id=None, avatar='cat'):
         self.name = name

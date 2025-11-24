@@ -56,14 +56,14 @@ def report_status(feeder, id):
     if 'battery' in data:
         feeder.battery_level = data.get('battery')
 
-    # --- Advanced Sensor Logic ---
+    # --- Advanced Sensor Logic (Corrected) ---
+    
     # 1. Food Scale Logic
     if 'weight' in data:
         weight = float(data['weight'])
         feeder.drawer_weight = weight
         
         # Thresholds
-        target = feeder.target_weight or 210.0
         warning = feeder.warning_weight or 80.0
         critical = feeder.critical_weight or 20.0
         
@@ -78,6 +78,18 @@ def report_status(feeder, id):
             new_status = 'CRITICAL'
 
         if feeder.status != 'TRIP':
+            # Check Block Status (Interlock: 2 Feeders in LSL -> Block Critical)
+            if feeder.block_name:
+                block_feeders = Feeder.query.filter_by(block_name=feeder.block_name).all()
+                lsl_count = sum(1 for f in block_feeders if f.sensor_state == 'LSL' and f.id != feeder.id)
+                if new_state == 'LSL' and lsl_count >= 1:
+                    # 2nd feeder in LSL -> Block Critical? 
+                    # User said: "2 gavetas em atenção -> bloco em alerta crítico"
+                    # We can set this feeder to CRITICAL or handle a Block Alarm entity.
+                    # For now, let's mark this feeder as CRITICAL to escalate.
+                    new_status = 'CRITICAL' 
+                    print(f"Block {feeder.block_name}: Multiple Feeders in LSL. Escalating.")
+
             # Check for LSLL persistence (Fault 1)
             if new_state == 'LSLL':
                 # Trigger Auto-Refill (Action for LSLL)
@@ -85,49 +97,52 @@ def report_status(feeder, id):
                     # Check Main Food Tank Level (if linked)
                     can_refill = True
                     if feeder.food_tank:
-                        if feeder.food_tank.level <= 5: # Arbitrary 5% threshold
+                        # Main Tank Critical < 20kg (User Spec)
+                        # Assuming tank.current_weight is in kg
+                        if feeder.food_tank.current_weight <= 20.0: 
                             can_refill = False
-                            print(f"Feeder {feeder.id}: Food LSLL but Main Food Tank Empty!")
-                            # Could trigger notification
+                            print(f"Feeder {feeder.id}: Food LSLL but Main Food Tank Critical (<20kg)!")
+                            # Trigger Block Alarm?
                     
                     if can_refill:
-                        # Send Multi-dose refill command
-                        # We want to fill 1 unit (target_weight)
+                        # Send SMART_REFILL command
                         CommandBus.add_command(feeder.id, {
-                            'type': 'refill', 
-                            'units': 1, 
-                            'unit_weight': feeder.target_weight,
-                            'duration': feeder.open_duration_ms
+                            'type': 'smart_refill', 
+                            'target_weight': 210.0
                         }) 
-                        print(f"Feeder {feeder.id}: Food LSLL. Attempting auto-refill.")
+                        print(f"Feeder {feeder.id}: Food LSLL. Attempting SMART_REFILL.")
 
             feeder.sensor_state = new_state
             feeder.status = new_status
 
     # 2. Water Sensor Logic
     if 'water_sensor' in data:
-        # Expecting 'LSH' or 'LSLL'
+        # Expecting 'LSH' or 'LSLL' (Low)
         w_state = data['water_sensor']
         feeder.water_sensor_state = w_state
         
-        if w_state == 'LSLL':
+        if w_state == 'LSLL': # Low
             # Water Critical -> Attempt Refill
-            if not feeder.water_locked:
+            if feeder.water_mode == 'AUTO':
                 # Check Main Water Tank Level (if linked)
-                if feeder.water_tank: # This is the "Main Water Tank"
-                    # Check if Main Tank is empty (using level or weight)
-                    if feeder.water_tank.level > 5: # Arbitrary 5% threshold
-                        # Open Solenoid
-                        CommandBus.add_command(feeder.id, {
-                            'type': 'water_refill',
-                            'duration': 5000 # Open for 5 seconds (configurable?)
-                        })
-                        print(f"Feeder {feeder.id}: Water LSLL. Refilling from {feeder.water_tank.name}.")
-                    else:
-                        print(f"Feeder {feeder.id}: Water LSLL but Main Water Tank Empty!")
-                        # Could trigger a notification here
-                else:
-                     print(f"Feeder {feeder.id}: Water LSLL but no Main Water Tank linked.")
+                can_refill = True
+                if feeder.water_tank: 
+                    # Main Tank Low = Critical (User Spec)
+                    # Assuming tank.level is used or we need a sensor state for tank
+                    if feeder.water_tank.level <= 10: # Arbitrary Low Threshold
+                        can_refill = False
+                        print(f"Feeder {feeder.id}: Water Low but Main Water Tank Low!")
+                
+                if can_refill:
+                    # Open Solenoid
+                    CommandBus.add_command(feeder.id, {
+                        'type': 'water_control',
+                        'action': 'OPEN',
+                        'duration': 10000 # 10s Timeout check
+                    })
+                    print(f"Feeder {feeder.id}: Water Low. Opening Solenoid (Auto).")
+            else:
+                 print(f"Feeder {feeder.id}: Water Low but Mode is MANUAL.")
 
     db.session.commit()
     
